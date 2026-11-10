@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Temple of Artemis Leukophryene · VR</title>
+<meta name="theme-color" content="#0b0b0e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/icon.png">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.js", "three/addons/": "./vendor/jsm/" } }
+</script>
+</head>
+<body>
+<div id="app"></div>
+
+<div id="intro">
+  <div class="intro-card">
+    <div class="kicker">Magnesia on the Maeander · c. 200 BC</div>
+    <h1>Temple of Artemis Leukophryene</h1>
+    <p class="lead">An evidence-based, AI-assisted HBIM reconstruction. Four 360° viewpoints; the rings mark the
+      reconstructed elements. Select a ring to study the element in the studio.</p>
+    <div class="btns">
+      <button id="btn-vr" class="primary" disabled>Checking VR…</button>
+      <button id="btn-2d">View on this screen</button>
+    </div>
+    <div id="load-status" class="small">Loading…</div>
+    <div class="small dim">Farbod Saed · Politecnico di Torino · supervisor Prof. Elisabetta Caterina Giovannini</div>
+    <div class="offline">
+      <button id="btn-offline" class="ghost">Save for offline use</button>
+      <span id="offline-status" class="small dim"></span>
+    </div>
+  </div>
+</div>
+
+<div id="hud" class="hidden">
+  <div id="where"><span class="kicker">Viewpoint</span><span id="where-name"></span></div>
+  <canvas id="minimap" width="460" height="254" title="Plan: select a viewpoint"></canvas>
+  <div id="hint">Drag to look around · select a ring to open the element · use the plan to move</div>
+</div>
+
+<div id="studio-ui" class="hidden">
+  <div id="panel">
+    <div class="kicker" id="p-sub"></div>
+    <h2 id="p-title"></h2>
+    <img id="p-img" alt="">
+    <p id="p-text"></p>
+    <dl>
+      <dt>Size</dt><dd id="p-size"></dd>
+      <dt>Evidence</dt><dd id="p-ev"></dd>
+      <dt>Source</dt><dd id="p-src"></dd>
+    </dl>
+    <div class="btns">
+      <button id="btn-back" class="primary">← Back to the temple</button>
+      <button id="btn-scale">Real size</button>
+      <button id="btn-reset">Reset view</button>
+    </div>
+  </div>
+  <div id="studio-hint">Drag to turn · scroll or pinch to zoom</div>
+</div>
+
+<div id="loading" class="hidden"><div class="spinner"></div><span id="loading-text">Loading</span></div>
+
+<script>
+window.addEventListener('error', (e) => { const s = document.getElementById('load-status'); if (s) s.textContent = 'Error: ' + e.message; });
+window.addEventListener('unhandledrejection', (e) => { const s = document.getElementById('load-status'); if (s) s.textContent = 'Error: ' + (e.reason && e.reason.message || e.reason); });
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

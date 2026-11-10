@@ -1,0 +1,63 @@
+{
+ "core": [
+  "./",
+  "app.js",
+  "data/files.json",
+  "data/objects.json",
+  "data/panoramas.json",
+  "data/plan.json",
+  "img/base_patterns.jpg",
+  "img/icon.png",
+  "img/plan.png",
+  "index.html",
+  "manifest.webmanifest",
+  "style.css",
+  "vendor/jsm/controls/OrbitControls.js",
+  "vendor/jsm/environments/RoomEnvironment.js",
+  "vendor/jsm/libs/meshopt_decoder.module.js",
+  "vendor/jsm/loaders/GLTFLoader.js",
+  "vendor/jsm/utils/BufferGeometryUtils.js",
+  "vendor/jsm/utils/SkeletonUtils.js",
+  "vendor/jsm/webxr/VRButton.js",
+  "vendor/three.core.js",
+  "vendor/three.module.js"
+ ],
+ "models": [
+  "models/acroterion_apex.glb",
+  "models/acroterion_corner.glb",
+  "models/ceiling_coffers.glb",
+  "models/col_cella.glb",
+  "models/col_corner.glb",
+  "models/col_peristyle.glb",
+  "models/col_pronaos.glb",
+  "models/col_wfront.glb",
+  "models/frieze_figure.glb",
+  "models/frieze_garland.glb",
+  "models/meander.glb",
+  "models/statue.glb"
+ ],
+ "panos8k": [
+  "panos/AT_360_Cella_8k_r0c0.jpg",
+  "panos/AT_360_Cella_8k_r0c1.jpg",
+  "panos/AT_360_Cella_8k_r1c0.jpg",
+  "panos/AT_360_Cella_8k_r1c1.jpg",
+  "panos/AT_360_Court_W_8k_r0c0.jpg",
+  "panos/AT_360_Court_W_8k_r0c1.jpg",
+  "panos/AT_360_Court_W_8k_r1c0.jpg",
+  "panos/AT_360_Court_W_8k_r1c1.jpg",
+  "panos/AT_360_East_back_8k_r0c0.jpg",
+  "panos/AT_360_East_back_8k_r0c1.jpg",
+  "panos/AT_360_East_back_8k_r1c0.jpg",
+  "panos/AT_360_East_back_8k_r1c1.jpg",
+  "panos/AT_360_Pteron_SW_8k_r0c0.jpg",
+  "panos/AT_360_Pteron_SW_8k_r0c1.jpg",
+  "panos/AT_360_Pteron_SW_8k_r1c0.jpg",
+  "panos/AT_360_Pteron_SW_8k_r1c1.jpg"
+ ],
+ "panos4k": [
+  "panos/AT_360_Cella_4k.jpg",
+  "panos/AT_360_Court_W_4k.jpg",
+  "panos/AT_360_East_back_4k.jpg",
+  "panos/AT_360_Pteron_SW_4k.jpg"
+ ]
+}

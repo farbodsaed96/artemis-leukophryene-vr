@@ -1,0 +1,183 @@
+[
+ {
+  "id": "peristyle",
+  "glb": "models/col_peristyle.glb",
+  "title": "Peristyle column",
+  "sub": "Ionic order · 36 of the 42 outer columns",
+  "text": "13.12 m high (40 Greek feet), lower diameter 1.40 m. Counted from the nearest corner, the odd columns have upright leaves on the upper torus of the base and the even columns horizontal leaves (Humann 1904, p.53, Abb.36). The model shows an odd column; the image compares the two bases.",
+  "src": "Humann 1904, pp.52–57, Abb.35–37",
+  "ev": "Base patterns and order: stated. Leaf counts and relief depth: assumed.",
+  "image": "img/base_patterns.jpg",
+  "size_m": [
+   1.96,
+   13.12,
+   1.96
+  ],
+  "faces": 219998
+ },
+ {
+  "id": "corner",
+  "glb": "models/col_corner.glb",
+  "title": "Corner column",
+  "sub": "4 columns · diagonal corner volute",
+  "text": "At the four corners the capital turns its outer volute on the diagonal, so that both fronts show a complete volute (Humann p.56). The base has upright leaves: the corner column is number 1, an odd column.",
+  "src": "Humann 1904, p.53, p.56",
+  "ev": "Diagonal volute: stated. Volute geometry after the corner capitals of Priene: comparison.",
+  "size_m": [
+   1.96,
+   13.12,
+   1.96
+  ],
+  "faces": 220000
+ },
+ {
+  "id": "wfront",
+  "glb": "models/col_wfront.glb",
+  "title": "West front, central columns",
+  "sub": "W-04 and W-05 · the main entrance",
+  "text": "The two columns that frame the wider central bay (5.25 m) of the main west front share one capital pattern: a braid on the middle field of the cushion and two rows of acanthus on the side fields (Humann p.56, Abb.38). Both capitals are in the Pergamon Museum, Berlin. Base: horizontal leaves (column 4 = even).",
+  "src": "Humann 1904, p.53, p.56, Abb.38",
+  "ev": "Braid and acanthus: stated (photo). Leaf and lobe numbers, braid repeat: assumed.",
+  "size_m": [
+   1.96,
+   13.12,
+   1.96
+  ],
+  "faces": 199998
+ },
+ {
+  "id": "pronaos",
+  "glb": "models/col_pronaos.glb",
+  "title": "Pronaos and opisthodomos column",
+  "sub": "6 columns · west and east porches",
+  "text": "Two columns in antis and two inner columns stand in the west porch (pronaos), two in antis in the east porch (opisthodomos). Their bases carry a guilloche (braid) on the upper torus (Humann p.53, Abb.36 no.3).",
+  "src": "Humann 1904, p.45, p.53",
+  "ev": "Positions and base ornament: stated.",
+  "size_m": [
+   1.96,
+   13.12,
+   1.96
+  ],
+  "faces": 240000
+ },
+ {
+  "id": "cella",
+  "glb": "models/col_cella.glb",
+  "title": "Cella column",
+  "sub": "6 columns · left unfinished",
+  "text": "Two rows of three, 3.61 m (11 feet) apart, on the cella floor 0.80 m above the pteron; 12.32 m high. The interior was never finished: the shafts are unfluted, the base profiles uncarved, and two lifting bosses were left on each side of the plinth (Humann p.80, Abb.79, 86). Three bases were found in place.",
+  "src": "Humann 1904, p.39, p.45, p.80, Abb.47, 79",
+  "ev": "Unfinished state and spacing: stated. Height read from Abb.47; finished capital: assumed.",
+  "size_m": [
+   1.859,
+   12.32,
+   1.85
+  ],
+  "faces": 160000
+ },
+ {
+  "id": "statue",
+  "glb": "models/statue.glb",
+  "title": "Cult image of Artemis Leukophryene",
+  "sub": "Reconstruction · goddess, staffs and eagles",
+  "text": "The image is lost. Humann reconstructs it from the city coins in the Ephesian type: bands on the lower body, many breasts, a mural crown with veil, the forearms resting on two staffs, and two eagles (pp.89–90, Abb.87). Here a 3D scan of the Farnese Artemis (Naples) stands for the figure, scaled to 3.21 m, with two Roman eagle scans (the pedestal, after Abb.87, is seen in the cella).",
+  "src": "Humann 1904, pp.89–90, Abb.87; scans: Scan The World (CC BY-NC-SA)",
+  "ev": "Type and attributes: from the coins. Figure, eagles and gilding: hypothesis.",
+  "size_m": [
+   2.103,
+   3.338,
+   0.879
+  ],
+  "faces": 380907
+ },
+ {
+  "id": "acroterion_apex",
+  "glb": "models/acroterion_apex.glb",
+  "title": "Central acroterion",
+  "sub": "Crown of the pediment",
+  "text": "Each pediment carried three acroteria. The central one rose about 2 m: scrolling acanthus with a small figure in the middle, known from fragments of the east pediment (Humann pp.65–69, Abb.57, 60–61).",
+  "src": "Humann 1904, pp.65–69, Abb.57, 59–61",
+  "ev": "Design: traced from the 1:40 reconstruction. Depth 0.60 m: hypothesis.",
+  "size_m": [
+   3.175,
+   2.73,
+   0.541
+  ],
+  "faces": 260000
+ },
+ {
+  "id": "acroterion_corner",
+  "glb": "models/acroterion_corner.glb",
+  "title": "Corner acroterion",
+  "sub": "Set on the diagonal of the roof corner",
+  "text": "The corner acroteria were half-palmettes standing on the diagonal of each pediment corner (Humann p.65, Abb.57–58); the corner acroterion of the Trajaneum at Pergamon is a close comparison (Abb.62).",
+  "src": "Humann 1904, p.65, Abb.57–58, 62",
+  "ev": "Design: traced from the 1:40 reconstruction. Depth 0.45 m: hypothesis.",
+  "size_m": [
+   2.606,
+   1.934,
+   1.537
+  ],
+  "faces": 200000
+ },
+ {
+  "id": "ceiling_coffers",
+  "glb": "models/ceiling_coffers.glb",
+  "title": "Coffers of the timber ceiling",
+  "sub": "Pteron ceiling · 2 × 2 coffers",
+  "text": "Nothing of the ceilings survives. Humann suggests imagining them like the Italian panelled ceilings of about 1500 and shows a Florentine example (p.83, Abb.81). The model follows it: a 0.985 m module equal to the beam spacing, 0.17 m lattice bands, a carved four-leaf rosette 0.39 m across, and a turned boss at every crossing.",
+  "src": "Humann 1904, p.83, Abb.80–81",
+  "ev": "Hypothesis as a whole (a timber ceiling: stated).",
+  "size_m": [
+   1.97,
+   1.97,
+   0.42
+  ],
+  "faces": 15230
+ },
+ {
+  "id": "frieze_figure",
+  "glb": "models/frieze_figure.glb",
+  "title": "Frieze of the cella wall",
+  "sub": "Acanthus scrolls with a winged figure",
+  "text": "A band of acanthus scrolls runs along the top of the cella walls. In its repeat a winged female figure with open arms grows out of the scrolls, between flowers and palmettes (Humann pp.72–77, Abb.65, 68–69). One repeat, 3.37 m long.",
+  "src": "Humann 1904, pp.72–77, Abb.65, 68–69",
+  "ev": "Motif: from the fragments. Repeat length and relief depth: assumed.",
+  "size_m": [
+   3.365,
+   0.463,
+   0.63
+  ],
+  "faces": 38008
+ },
+ {
+  "id": "frieze_garland",
+  "glb": "models/frieze_garland.glb",
+  "title": "Frieze of the opisthodomos barriers",
+  "sub": "Garlands and heads",
+  "text": "Low barriers closed the sides of the east porch. Their frieze carries heavy garlands slung between animal heads, with rosettes in the swags, under a small geison (Humann pp.78–81, Abb.76–78). One barrier, 2.8 m long.",
+  "src": "Humann 1904, pp.78–81, Abb.76–78",
+  "ev": "Motif: from the drawing and photo of the fragments. Length: from the plan.",
+  "size_m": [
+   2.808,
+   0.6,
+   0.76
+  ],
+  "faces": 159999
+ },
+ {
+  "id": "meander",
+  "glb": "models/meander.glb",
+  "title": "Meander band",
+  "sub": "Foot of the cella wall",
+  "text": "Above the base moulding of the cella walls runs a meander band whose square fields hold small rosettes, the “stars” (Humann pp.73–75, Abb.65, 67). Two stones, 2.72 m.",
+  "src": "Humann 1904, pp.73–75, Abb.65, 67",
+  "ev": "Motif: stated and drawn. Stone length: from the model.",
+  "size_m": [
+   2.724,
+   0.385,
+   0.6
+  ],
+  "faces": 5496
+ }
+]
