@@ -15,29 +15,35 @@
 <body>
 <div id="app"></div>
 
+<div id="lang" role="group" aria-label="Language">
+  <button data-lang="en">EN</button><span>·</span><button data-lang="it">IT</button>
+</div>
+
 <div id="intro">
   <div class="intro-card">
-    <div class="kicker">Magnesia on the Maeander · c. 200 BC</div>
-    <h1>Temple of Artemis Leukophryene</h1>
-    <p class="lead">An evidence-based, AI-assisted HBIM reconstruction. Four 360° viewpoints; the rings mark the
-      reconstructed elements. Select a ring to study the element in the studio.</p>
+    <div class="kicker" data-i18n="kicker"></div>
+    <h1 data-i18n="title"></h1>
+    <p class="lead" data-i18n="lead"></p>
     <div class="btns">
-      <button id="btn-vr" class="primary" disabled>Checking VR…</button>
-      <button id="btn-2d">View on this screen</button>
+      <button id="btn-vr" class="primary" disabled></button>
+      <button id="btn-2d" data-i18n="view2d"></button>
     </div>
-    <div id="load-status" class="small">Loading…</div>
-    <div class="small dim">Farbod Saed · Politecnico di Torino · supervisor Prof. Elisabetta Caterina Giovannini</div>
+    <div id="load-status" class="small"></div>
+    <div class="small dim" data-i18n="credits"></div>
     <div class="offline">
-      <button id="btn-offline" class="ghost">Save for offline use</button>
+      <button id="btn-offline" class="ghost" data-i18n="offline"></button>
       <span id="offline-status" class="small dim"></span>
     </div>
   </div>
 </div>
 
 <div id="hud" class="hidden">
-  <div id="where"><span class="kicker">Viewpoint</span><span id="where-name"></span></div>
-  <canvas id="minimap" width="460" height="254" title="Plan: select a viewpoint"></canvas>
-  <div id="hint">Drag to look around · select a ring to open the element · use the plan to move</div>
+  <div id="where"><span class="kicker" data-i18n="viewpoint"></span><span id="where-name"></span></div>
+  <div id="mapbox">
+    <div class="map-head"><span class="kicker" data-i18n="mapTitle"></span><span class="map-sub" data-i18n="mapSub"></span></div>
+    <canvas id="minimap"></canvas>
+  </div>
+  <div id="hint" data-i18n="hint"></div>
 </div>
 
 <div id="studio-ui" class="hidden">
@@ -47,20 +53,19 @@
     <img id="p-img" alt="">
     <p id="p-text"></p>
     <dl>
-      <dt>Size</dt><dd id="p-size"></dd>
-      <dt>Evidence</dt><dd id="p-ev"></dd>
-      <dt>Source</dt><dd id="p-src"></dd>
+      <dt data-i18n="size"></dt><dd id="p-size"></dd>
+      <dt data-i18n="evidence"></dt><dd id="p-ev"></dd>
+      <dt data-i18n="source"></dt><dd id="p-src"></dd>
     </dl>
     <div class="btns">
-      <button id="btn-back" class="primary">← Back to the temple</button>
-      <button id="btn-scale">Real size</button>
-      <button id="btn-reset">Reset view</button>
+      <button id="btn-back" class="primary" data-i18n="back"></button>
+      <button id="btn-reset" data-i18n="reset"></button>
     </div>
   </div>
-  <div id="studio-hint">Drag to turn · scroll or pinch to zoom</div>
+  <div id="studio-hint" data-i18n="studioHint"></div>
 </div>
 
-<div id="loading" class="hidden"><div class="spinner"></div><span id="loading-text">Loading</span></div>
+<div id="loading" class="hidden"><div class="spinner"></div><span id="loading-text"></span></div>
 
 <script>
 window.addEventListener('error', (e) => { const s = document.getElementById('load-status'); if (s) s.textContent = 'Error: ' + e.message; });

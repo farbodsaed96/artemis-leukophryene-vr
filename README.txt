@@ -6,9 +6,11 @@ WHAT IT IS
   Plan: bottom-left on a screen; on the floor under your feet in VR (point at a gold dot to move).
 
 CONTROLS
-  Quest 3:  point + trigger (or pinch) = select | in the studio: hold trigger and twist = turn the object,
-            thumbstick left/right = turn, up/down = zoom, grip = back to the temple | in the panorama: grip = plan on/off
-  Screen:   drag = look / turn, wheel or pinch = zoom, Esc = back
+  Quest 3:  point + trigger (or pinch) = select | studio (real size): hold trigger and twist = turn the object,
+            left stick up/down = lift the object, right stick = turn (left/right) and nearer/farther (up/down),
+            grip = back to the temple | in the panorama: grip = plan on/off
+  Screen:   drag = look / turn, right-drag / two fingers / arrow keys = move (pan), wheel or pinch = zoom, Esc = back
+  Language: EN / IT switch top right (also ?lang=it in the link)
 
 PUT IT ONLINE (needed for the headset: WebXR needs https)
   GitHub Pages (free): new public repository -> "Add file > Upload files" -> drag the CONTENTS of this folder

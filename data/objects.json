@@ -13,7 +13,11 @@
    13.12,
    1.96
   ],
-  "faces": 219998
+  "faces": 219998,
+  "title_it": "Colonna della peristasi",
+  "sub_it": "Ordine ionico · 36 delle 42 colonne esterne",
+  "text_it": "Alta 13,12 m (40 piedi greci), diametro inferiore 1,40 m. Contando dall’angolo più vicino, le colonne dispari hanno foglie verticali sul toro superiore della base, quelle pari foglie orizzontali (Humann 1904, p. 53, Abb. 36). Il modello mostra una colonna dispari; l’immagine confronta le due basi.",
+  "ev_it": "Motivi delle basi e ordine: attestati. Numero delle foglie e profondità del rilievo: ipotizzati."
  },
  {
   "id": "corner",
@@ -28,7 +32,11 @@
    13.12,
    1.96
   ],
-  "faces": 220000
+  "faces": 220000,
+  "title_it": "Colonna angolare",
+  "sub_it": "4 colonne · voluta angolare diagonale",
+  "text_it": "Ai quattro angoli il capitello ruota la voluta esterna in diagonale, così che entrambe le fronti mostrino una voluta completa (Humann p. 56). La base ha foglie verticali: la colonna d’angolo è la numero 1, dispari.",
+  "ev_it": "Voluta diagonale: attestata. Geometria della voluta secondo i capitelli angolari di Priene: confronto."
  },
  {
   "id": "wfront",
@@ -43,7 +51,11 @@
    13.12,
    1.96
   ],
-  "faces": 199998
+  "faces": 199998,
+  "title_it": "Fronte ovest, colonne centrali",
+  "sub_it": "W-04 e W-05 · l’ingresso principale",
+  "text_it": "Le due colonne che inquadrano l’intercolumnio centrale più largo (5,25 m) della fronte principale a ovest hanno lo stesso capitello: una treccia nel campo centrale del pulvino e due file di acanto nei campi laterali (Humann p. 56, Abb. 38). Entrambi i capitelli sono al Pergamonmuseum di Berlino. Base: foglie orizzontali (colonna 4 = pari).",
+  "ev_it": "Treccia e acanto: attestati (foto). Numero di foglie e lobi, passo della treccia: ipotizzati."
  },
  {
   "id": "pronaos",
@@ -58,7 +70,11 @@
    13.12,
    1.96
   ],
-  "faces": 240000
+  "faces": 240000,
+  "title_it": "Colonna del pronao e dell’opistodomo",
+  "sub_it": "6 colonne · portici ovest ed est",
+  "text_it": "Nel portico occidentale (pronao) stanno due colonne in antis e due colonne interne, in quello orientale (opistodomo) due colonne in antis. Le loro basi portano una treccia (guilloche) sul toro superiore (Humann p. 53, Abb. 36 n. 3).",
+  "ev_it": "Posizioni e decorazione della base: attestate."
  },
  {
   "id": "cella",
@@ -73,7 +89,11 @@
    12.32,
    1.85
   ],
-  "faces": 160000
+  "faces": 160000,
+  "title_it": "Colonna della cella",
+  "sub_it": "6 colonne · rimaste incompiute",
+  "text_it": "Due file di tre, a 3,61 m (11 piedi) l’una dall’altra, sul pavimento della cella 0,80 m sopra la peristasi; alte 12,32 m. L’interno non fu mai finito: fusti senza scanalature, profili delle basi non lavorati e due bozze di sollevamento lasciate su ogni lato del plinto (Humann p. 80, Abb. 79, 86). Tre basi sono state trovate in situ.",
+  "ev_it": "Stato incompiuto e interasse: attestati. Altezza letta da Abb. 47; capitello finito: ipotizzato."
  },
  {
   "id": "statue",
@@ -88,7 +108,11 @@
    3.338,
    0.879
   ],
-  "faces": 380907
+  "faces": 380907,
+  "title_it": "Simulacro di Artemide Leucofriene",
+  "sub_it": "Ricostruzione · dea, bastoni e aquile",
+  "text_it": "Il simulacro è perduto. Humann lo ricostruisce dalle monete della città nel tipo efesino: fasce sulla parte inferiore del corpo, molti seni, corona turrita con velo, avambracci appoggiati a due bastoni e due aquile (pp. 89–90, Abb. 87). Qui una scansione 3D dell’Artemide Farnese (Napoli), scalata a 3,21 m, sostituisce la figura, con due scansioni di aquile romane (il basamento, secondo Abb. 87, si vede nella cella).",
+  "ev_it": "Tipo e attributi: dalle monete. Figura, aquile e doratura: ipotesi."
  },
  {
   "id": "acroterion_apex",
@@ -103,7 +127,11 @@
    2.73,
    0.541
   ],
-  "faces": 260000
+  "faces": 260000,
+  "title_it": "Acroterio centrale",
+  "sub_it": "Coronamento del frontone",
+  "text_it": "Ogni frontone portava tre acroteri. Quello centrale era alto circa 2 m: girali d’acanto con una piccola figura al centro, noti da frammenti del frontone orientale (Humann pp. 65–69, Abb. 57, 60–61).",
+  "ev_it": "Disegno: ricalcato dalla ricostruzione 1:40. Profondità 0,60 m: ipotesi."
  },
  {
   "id": "acroterion_corner",
@@ -118,7 +146,11 @@
    1.934,
    1.537
   ],
-  "faces": 200000
+  "faces": 200000,
+  "title_it": "Acroterio angolare",
+  "sub_it": "Sulla diagonale dell’angolo del tetto",
+  "text_it": "Gli acroteri angolari erano semipalmette poste sulla diagonale di ciascun angolo del frontone (Humann p. 65, Abb. 57–58); un confronto stretto è l’acroterio angolare del Traianeo di Pergamo (Abb. 62).",
+  "ev_it": "Disegno: ricalcato dalla ricostruzione 1:40. Profondità 0,45 m: ipotesi."
  },
  {
   "id": "ceiling_coffers",
@@ -133,7 +165,11 @@
    1.97,
    0.42
   ],
-  "faces": 15230
+  "faces": 15230,
+  "title_it": "Cassettoni del soffitto ligneo",
+  "sub_it": "Soffitto della peristasi · 2 × 2 cassettoni",
+  "text_it": "Dei soffitti non resta nulla. Humann suggerisce di immaginarli come i soffitti a cassettoni italiani del 1500 circa e mostra un esempio fiorentino (p. 83, Abb. 81). Il modello lo segue: un modulo di 0,985 m pari all’interasse delle travi, fasce a reticolo di 0,17 m, un rosone a quattro foglie di 0,39 m e un bottone tornito a ogni incrocio.",
+  "ev_it": "Ipotesi nel suo insieme (soffitto ligneo: attestato)."
  },
  {
   "id": "frieze_figure",
@@ -148,7 +184,11 @@
    0.463,
    0.63
   ],
-  "faces": 38008
+  "faces": 38008,
+  "title_it": "Fregio della parete della cella",
+  "sub_it": "Girali d’acanto con figura alata",
+  "text_it": "Una fascia di girali d’acanto corre alla sommità delle pareti della cella. Nel suo modulo una figura femminile alata a braccia aperte nasce dai girali, tra fiori e palmette (Humann pp. 72–77, Abb. 65, 68–69). Un modulo, lungo 3,37 m.",
+  "ev_it": "Motivo: dai frammenti. Lunghezza del modulo e profondità del rilievo: ipotizzate."
  },
  {
   "id": "frieze_garland",
@@ -163,7 +203,11 @@
    0.6,
    0.76
   ],
-  "faces": 159999
+  "faces": 159999,
+  "title_it": "Fregio dei parapetti dell’opistodomo",
+  "sub_it": "Ghirlande e teste",
+  "text_it": "Bassi parapetti chiudevano i lati del portico orientale. Il loro fregio porta pesanti ghirlande sospese tra teste di animali, con rosette negli spazi, sotto un piccolo geison (Humann pp. 78–81, Abb. 76–78). Un parapetto, lungo 2,8 m.",
+  "ev_it": "Motivo: dal disegno e dalla foto dei frammenti. Lunghezza: dalla pianta."
  },
  {
   "id": "meander",
@@ -178,6 +222,10 @@
    0.385,
    0.6
   ],
-  "faces": 5496
+  "faces": 5496,
+  "title_it": "Fascia a meandro",
+  "sub_it": "Piede della parete della cella",
+  "text_it": "Sopra la modanatura di base delle pareti della cella corre una fascia a meandro i cui campi quadrati contengono piccole rosette, le «stelle» (Humann pp. 73–75, Abb. 65, 67). Due blocchi, 2,72 m.",
+  "ev_it": "Motivo: attestato e disegnato. Lunghezza del blocco: dal modello."
  }
 ]

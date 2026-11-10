@@ -11,7 +11,6 @@ const IS_QUEST = /OculusBrowser|Quest|Meta/i.test(UA);
 const IS_MOBILE = !IS_QUEST && /Android|iPhone|iPad|iPod/i.test(UA);
 const PLAN_SCALE = 0.025;          // VR floor plan: 1:40
 const MARKER_R = 20;               // marker distance inside the panorama sphere (m)
-const FIT_SIZE = 1.35;             // studio: largest dimension when fitted (m)
 
 // ------------------------------------------------------------------ renderer, scene
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
@@ -42,6 +41,55 @@ const [PANOS, OBJECTS, PLAN] = await Promise.all(['data/panoramas.json', 'data/o
   .map((u) => fetch(u).then((r) => r.json())));
 const panoById = Object.fromEntries(PANOS.panoramas.map((p) => [p.id, p]));
 const objById = Object.fromEntries(OBJECTS.map((o) => [o.id, o]));
+// ------------------------------------------------------------------ language (EN / IT)
+const STR = {
+  en: { kicker: 'Magnesia on the Maeander · c. 200 BC', title: 'Temple of Artemis Leukophryene',
+    lead: 'An evidence-based, AI-assisted HBIM reconstruction. Four 360° viewpoints; the rings mark the reconstructed elements. Select a ring to study the element in the studio, at its real size.',
+    view2d: 'View on this screen', enterVR: 'Enter VR', checkVR: 'Checking VR…', noVR: 'VR not available on this device', needHttps: 'VR needs a headset browser (https)',
+    credits: 'Farbod Saed · Politecnico di Torino · supervisor Prof. Elisabetta Caterina Giovannini',
+    offline: 'Save for offline use', offNo: 'Offline use is not supported in this browser.', offSaving: 'Saving', offDone: 'Saved: {n} files. The page now works without internet in this browser.',
+    ready8: 'Ready · 8K panoramas', ready4: 'Ready · 4K panoramas', loading: 'Loading', viewpoint: 'Viewpoint',
+    mapTitle: 'Temple of Artemis', mapSub: 'Magnesia on the Maeander · plan', here: 'here',
+    hint: 'Drag to look around · select a ring to open the element · use the plan to move',
+    studioHint: 'Drag to turn · right-drag or two fingers to move · scroll or pinch to zoom',
+    size: 'Size', evidence: 'Evidence', source: 'Source', back: '← Back to the temple', reset: 'Reset view', high: 'high',
+    vrBack: 'Back to the temple', vrReset: 'Reset',
+    vrHint: 'Trigger + twist: turn · left stick: up / down · right stick: turn, nearer / farther · grip: back' },
+  it: { kicker: 'Magnesia al Meandro · c. 200 a.C.', title: 'Tempio di Artemide Leucofriene',
+    lead: 'Una ricostruzione HBIM basata sulle evidenze e assistita dall’IA. Quattro punti di vista a 360°; gli anelli segnano gli elementi ricostruiti. Seleziona un anello per studiare l’elemento nello studio, in scala reale.',
+    view2d: 'Guarda su questo schermo', enterVR: 'Entra in VR', checkVR: 'Verifica VR…', noVR: 'VR non disponibile su questo dispositivo', needHttps: 'La VR richiede il browser di un visore (https)',
+    credits: 'Farbod Saed · Politecnico di Torino · relatrice Prof.ssa Elisabetta Caterina Giovannini',
+    offline: 'Salva per l’uso offline', offNo: 'L’uso offline non è supportato da questo browser.', offSaving: 'Salvataggio', offDone: 'Salvati {n} file. Ora la pagina funziona senza internet in questo browser.',
+    ready8: 'Pronto · panorami 8K', ready4: 'Pronto · panorami 4K', loading: 'Caricamento', viewpoint: 'Punto di vista',
+    mapTitle: 'Tempio di Artemide', mapSub: 'Magnesia al Meandro · pianta', here: 'qui',
+    hint: 'Trascina per guardarti intorno · seleziona un anello per aprire l’elemento · usa la pianta per spostarti',
+    studioHint: 'Trascina per ruotare · tasto destro o due dita per spostare · rotella o pizzico per lo zoom',
+    size: 'Dimensioni', evidence: 'Affidabilità', source: 'Fonte', back: '← Torna al tempio', reset: 'Reimposta vista', high: 'di altezza',
+    vrBack: 'Torna al tempio', vrReset: 'Reimposta',
+    vrHint: 'Grilletto + polso: ruota · stick sinistro: su / giù · stick destro: ruota, avvicina / allontana · grip: indietro' },
+};
+let LANG = (() => { const q = location.search.match(/[?&]lang=(en|it)/); if (q) return q[1];
+  try { return localStorage.getItem('at_lang') || ((navigator.language || '').startsWith('it') ? 'it' : 'en'); } catch (e) { return 'en'; } })();
+const T = (k) => (STR[LANG] && STR[LANG][k]) || STR.en[k] || k;
+const L = (o, k) => (LANG === 'it' && o[k + '_it']) || o[k];
+function num(v) { return v.toLocaleString(LANG === 'it' ? 'it-IT' : 'en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+let xrState = 'check', readyShown = false, currentPano = null, current = null;
+function applyLang() {
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = T(el.dataset.i18n); });
+  document.querySelectorAll('#lang button').forEach((b) => b.classList.toggle('on', b.dataset.lang === LANG));
+  document.title = T('title') + ' · VR';
+  $('btn-vr').textContent = T({ check: 'checkVR', ok: 'enterVR', no: 'noVR', https: 'needHttps' }[xrState]);
+}
+function setLang(l) {
+  LANG = l; try { localStorage.setItem('at_lang', l); } catch (e) {}
+  applyLang();
+  if (currentPano) { buildMarkers(currentPano); $('where-name').textContent = L(currentPano, 'title'); drawPlans(); }
+  if (current) { fillPanelHTML(current.o); drawVRPanel(); }
+  if (readyShown) $('load-status').textContent = HI_RES ? T('ready8') : T('ready4');
+}
+document.querySelectorAll('#lang button').forEach((b) => { b.onclick = () => setLang(b.dataset.lang); });
+applyLang();
 const HI_RES = !/[?&]lo\b/.test(location.search) && (IS_QUEST || !IS_MOBILE) && renderer.capabilities.maxTextureSize >= 4096;
 
 // ------------------------------------------------------------------ helpers
@@ -109,7 +157,7 @@ function buildMarkers(p) {
     const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: MARKER_TEX, depthTest: false, transparent: true }));
     s.position.copy(dir).multiplyScalar(MARKER_R); s.scale.setScalar(1.1); s.renderOrder = 11;
     s.userData = { obj: o.id, base: 1.1 };
-    const lab = labelSprite(o.title, o.sub);
+    const lab = labelSprite(L(o, 'title'), L(o, 'sub'));
     lab.position.copy(dir).multiplyScalar(MARKER_R - 0.5); lab.position.y -= 1.3;
     s.userData.label = lab;
     markerGroup.add(s, lab); markers.push(s);
@@ -127,7 +175,7 @@ async function loadPanoTexture(p) {
   if (texCache.size >= 2) { const [k, old] = texCache.entries().next().value; old.forEach((t) => t.dispose()); texCache.delete(k); }
   texCache.set(key, ts); return ts;
 }
-let currentPano = null;
+
 function faceHeading(deg) {                  // turn the view to a world azimuth (east = 0, north = 90)
   const want = THREE.MathUtils.degToRad(deg) + Math.PI / 2;           // camera yaw (three) that looks along that azimuth
   if (renderer.xr.isPresenting) {
@@ -137,7 +185,7 @@ function faceHeading(deg) {                  // turn the view to a world azimuth
 }
 async function goPano(id, { fade = true } = {}) {
   const p = panoById[id]; if (!p) return;
-  showLoading('Loading ' + p.title);
+  showLoading(T('loading') + ' · ' + L(p, 'title'));
   const tex = await loadPanoTexture(p);
   if (fade) await fadeTo(1, 220);
   if (tex.length === 4) {
@@ -148,7 +196,7 @@ async function goPano(id, { fade = true } = {}) {
     sphere.visible = true; sphereMat.map = tex[0]; sphereMat.color.set(0xffffff); sphereMat.needsUpdate = true;
   }
   panoGroup.rotation.y = THREE.MathUtils.degToRad(p.yaw_deg || 0);
-  currentPano = p; buildMarkers(p); drawPlans(); $('where-name').textContent = p.title;
+  currentPano = p; buildMarkers(p); drawPlans(); $('where-name').textContent = L(p, 'title');
   faceHeading(p.heading_deg || 0);
   hideLoading();
   if (fade) await fadeTo(0, 320);
@@ -157,26 +205,44 @@ async function goPano(id, { fade = true } = {}) {
 }
 
 // ------------------------------------------------------------------ plans (2D overlay + VR floor)
-const planImg = new Image(); planImg.src = 'img/plan.png';
+const planImg = new Image(); planImg.src = 'img/plan_v2.png';
 await planImg.decode().catch(() => {});
 const planCv = document.createElement('canvas'); planCv.width = planImg.naturalWidth || 2304; planCv.height = planImg.naturalHeight || 1272;
 const planTex = canvasTex(planCv);
 function w2p(X, Y, W, H) { return [(X - PLAN.x0) / (PLAN.x1 - PLAN.x0) * W, (PLAN.y1 - Y) / (PLAN.y1 - PLAN.y0) * H]; }
+let miniHover = null;
 function drawPlanOn(ctx, W, H, opts = {}) {
-  ctx.clearRect(0, 0, W, H); ctx.drawImage(planImg, 0, 0, W, H);
-  const k = W / 2304;
+  ctx.clearRect(0, 0, W, H);
+  const k = W / planImg.naturalWidth * (2304 / 2304);
+  if (opts.vr) {                                                  // VR floor: dark rounded plate + title
+    ctx.fillStyle = 'rgba(10,10,13,0.80)'; roundRect(ctx, 0, 0, W, H, 60 * k); ctx.fill();
+    ctx.strokeStyle = 'rgba(214,170,84,0.45)'; ctx.lineWidth = 4 * k; roundRect(ctx, 3 * k, 3 * k, W - 6 * k, H - 6 * k, 58 * k); ctx.stroke();
+    ctx.textAlign = 'left'; ctx.fillStyle = '#d6aa54'; ctx.font = `500 ${40 * k}px ${FONT}`;
+    ctx.fillText(T('mapTitle').toUpperCase(), 60 * k, 70 * k);
+    ctx.fillStyle = '#a39c8f'; ctx.font = `300 ${32 * k}px ${FONT}`; ctx.fillText(T('mapSub'), 60 * k, 112 * k);
+  }
+  ctx.drawImage(planImg, 0, 0, W, H);
   for (const p of PANOS.panoramas) {
     const [x, y] = w2p(p.eye_m[0], p.eye_m[1], W, H); const cur = currentPano && p.id === currentPano.id;
-    if (cur && opts.yaw !== undefined) {                         // view cone
-      ctx.fillStyle = 'rgba(214,170,84,0.35)'; ctx.beginPath(); ctx.moveTo(x, y);
-      ctx.arc(x, y, 150 * k, -opts.yaw - 0.55, -opts.yaw + 0.55); ctx.closePath(); ctx.fill();
+    if (cur && opts.yaw !== undefined) {                         // view cone, soft
+      const g = ctx.createRadialGradient(x, y, 0, x, y, 230 * k);
+      g.addColorStop(0, 'rgba(214,170,84,0.55)'); g.addColorStop(1, 'rgba(214,170,84,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x, y); ctx.arc(x, y, 230 * k, -opts.yaw - 0.5, -opts.yaw + 0.5); ctx.closePath(); ctx.fill();
     }
-    ctx.fillStyle = cur ? '#b8402c' : '#d6aa54'; ctx.strokeStyle = '#111'; ctx.lineWidth = 6 * k;
-    ctx.beginPath(); ctx.arc(x, y, (cur ? 30 : 24) * k, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    if (opts.labels) {
-      ctx.font = `500 ${46 * k}px ${FONT}`; ctx.textAlign = 'center'; ctx.fillStyle = cur ? '#ffffff' : '#ece6da';
-      ctx.strokeStyle = 'rgba(0,0,0,.85)'; ctx.lineWidth = 10 * k; const ty = y + (p.eye_m[1] > 20 ? -50 : 80) * k;
-      ctx.strokeText(p.title, x, ty); ctx.fillText(cur ? p.title + ' (here)' : p.title, x, ty);
+    if (cur) {
+      ctx.fillStyle = 'rgba(184,64,44,0.25)'; ctx.beginPath(); ctx.arc(x, y, 46 * k, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#b8402c'; ctx.beginPath(); ctx.arc(x, y, 22 * k, 0, Math.PI * 2); ctx.fill();
+    } else {
+      ctx.strokeStyle = miniHover === p.id ? '#ffffff' : '#d6aa54'; ctx.lineWidth = 7 * k;
+      ctx.beginPath(); ctx.arc(x, y, 24 * k, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = '#d6aa54'; ctx.beginPath(); ctx.arc(x, y, 9 * k, 0, Math.PI * 2); ctx.fill();
+    }
+    if (opts.labels || miniHover === p.id) {
+      const fs = (opts.labels ? 44 : 64) * k;
+      ctx.font = `400 ${fs}px ${FONT}`; ctx.textAlign = x < W * 0.2 ? 'left' : (x > W * 0.8 ? 'right' : 'center');
+      const ty = y + (p.eye_m[1] > 20 ? -60 : 95) * k;
+      ctx.fillStyle = cur ? '#ffffff' : '#ece6da';
+      ctx.fillText(cur ? L(p, 'title') + ' · ' + T('here') : L(p, 'title'), x, ty);
     }
   }
 }
@@ -186,15 +252,23 @@ function camYawWorld() {                     // world azimuth of the view (east 
   return Math.atan2(d.z, -d.x);              // three (x,z) = (-dX, dY)
 }
 function drawPlans() {
-  drawPlanOn(planCv.getContext('2d'), planCv.width, planCv.height, { labels: true }); planTex.needsUpdate = true;
+  drawPlanOn(planCv.getContext('2d'), planCv.width, planCv.height, { labels: true, vr: true }); planTex.needsUpdate = true;
   drawMini();
 }
-function drawMini() { if ($('hud').classList.contains('hidden')) return; drawPlanOn(miniCtx, mini.width, mini.height, { yaw: camYawWorld(), labels: false }); }
-mini.addEventListener('click', (e) => {
+function drawMini() {
+  if ($('hud').classList.contains('hidden')) return;
+  const dpr = Math.min(devicePixelRatio || 1, 2), w = Math.round(mini.clientWidth * dpr), h = Math.round(mini.clientHeight * dpr);
+  if (!w || !h) return;
+  if (mini.width !== w || mini.height !== h) { mini.width = w; mini.height = h; }
+  drawPlanOn(miniCtx, w, h, { yaw: camYawWorld(), labels: false });
+}
+function miniPano(e, maxD) {
   const r = mini.getBoundingClientRect(); const fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
-  const X = PLAN.x0 + fx * (PLAN.x1 - PLAN.x0), Y = PLAN.y1 - fy * (PLAN.y1 - PLAN.y0);
-  const best = nearestPano(X, Y); if (best && best.id !== currentPano.id) goPano(best.id);
-});
+  return nearestPano(PLAN.x0 + fx * (PLAN.x1 - PLAN.x0), PLAN.y1 - fy * (PLAN.y1 - PLAN.y0), maxD);
+}
+mini.addEventListener('click', (e) => { const best = miniPano(e, 8); if (best && best.id !== currentPano.id) goPano(best.id); });
+mini.addEventListener('mousemove', (e) => { const p = miniPano(e, 6); miniHover = p ? p.id : null; mini.style.cursor = p ? 'pointer' : 'default'; });
+mini.addEventListener('mouseleave', () => { miniHover = null; });
 function nearestPano(X, Y, maxD = 6) {
   let best = null, bd = maxD;
   for (const p of PANOS.panoramas) { const d = Math.hypot(p.eye_m[0] - X, p.eye_m[1] - Y); if (d < bd) { bd = d; best = p; } }
@@ -249,7 +323,7 @@ const gltf = new GLTFLoader(); gltf.setMeshoptDecoder(MeshoptDecoder);
 const modelCache = new Map();
 async function loadModel(o) {
   if (modelCache.has(o.id)) return modelCache.get(o.id);
-  const g = await gltf.loadAsync(o.glb, (e) => { if (e.total) showLoading(`Loading ${o.title} ${Math.round(100 * e.loaded / e.total)}%`); });
+  const g = await gltf.loadAsync(o.glb, (e) => { if (e.total) showLoading(`${T('loading')} · ${L(o, 'title')} ${Math.round(100 * e.loaded / e.total)}%`); });
   const root = g.scene;
   root.traverse((m) => {
     if (!m.isMesh) return;
@@ -265,16 +339,14 @@ async function loadModel(o) {
   const rec = { root, size, maxDim: Math.max(size.x, size.y, size.z) };
   modelCache.set(o.id, rec); return rec;
 }
-let current = null;            // { o, rec, real:boolean }
+
 let orbit = null;
 function placeStudio() {
-  const { rec } = current; const real = current.real;
-  const scale = real ? 1 : FIT_SIZE / rec.maxDim;
-  current.baseScale = scale; pivot.scale.setScalar(scale * zoom);
-  const h = rec.size.y * scale, R = rec.maxDim * scale / 2;
-  const lift = real ? Math.max(0.35, 0.0) : 0;
-  const cy = real ? lift + h / 2 : Math.max(1.35, h / 2 + 0.35);
-  const dist = real ? Math.max(2.6, R * 1.7 + 1.0) : 1.55;
+  const { rec } = current;                                          // always the real size (1:1)
+  current.baseScale = 1; pivot.scale.setScalar(zoom);
+  const h = rec.size.y, R = rec.maxDim / 2;
+  const cy = 0.35 + h / 2;                                          // floating 35 cm above the floor
+  const dist = Math.max(1.9, R * 0.9 + 1.2);
   // viewer position and forward (horizontal)
   const head = new THREE.Vector3(), fwd = new THREE.Vector3();
   if (renderer.xr.isPresenting) {
@@ -293,28 +365,37 @@ function placeStudio() {
   const sc = keyL.shadow.camera; const e = Math.max(R * 1.6, cy + R);
   sc.left = -e; sc.right = e; sc.top = e; sc.bottom = -e; sc.near = 0.1; sc.far = L * 4; sc.updateProjectionMatrix();
   shadowCatcher.scale.setScalar(Math.max(1, R * 1.3));
-  if (orbit) {
+  current.home = holder.position.clone(); current.homeQ = holder.quaternion.clone();
+  if (orbit && !renderer.xr.isPresenting) {
     orbit.target.copy(holder.position);
-    const camDist = real ? Math.max(R * 2.6, 3) : Math.max(0.9, R / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2)) * 1.12);
-    camera.position.set(holder.position.x, holder.position.y + (real ? 0 : 0.15), holder.position.z + camDist);
-    camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0);
-    orbit.minDistance = R * 0.5; orbit.maxDistance = R * 8 + 3; orbit.update();
+    const fit = Math.max(R, h / 2 * 1.05) / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2));
+    const camDist = Math.max(1.2, fit * 1.08);
+    camera.position.set(holder.position.x, holder.position.y + 0.05 * h, holder.position.z + camDist);
+    orbit.minDistance = 0.3; orbit.maxDistance = camDist * 4 + 5;
+    orbit._panOffset.set(0, 0, 0); orbit._sphericalDelta.set(0, 0, 0); orbit._scale = 1; orbit._performCursorZoom = false;   // drop motion left from the last object
+    orbit.update();
   }
   positionPanel();
 }
 async function openObject(id) {
   const o = objById[id]; if (!o) return;
-  showLoading('Loading ' + o.title);
+  showLoading(T('loading') + ' · ' + L(o, 'title'));
   let rec; try { rec = await loadModel(o); } catch (e) { hideLoading(); console.error(e); return; }
   await fadeTo(1, 250);
   pivot.clear(); pivot.add(rec.root); pivot.quaternion.identity(); spinIdle = true; zoom = 1;
-  current = { o, rec, real: false };
+  current = { o, rec };
   panoGroup.visible = false; floorPlan.visible = false; studio.visible = true;
   scene.background = STUDIO_BG; scene.environment = envTex; scene.environmentIntensity = 0.28;
   if (!renderer.xr.isPresenting) {
     orbit = orbit || new OrbitControls(camera, renderer.domElement);
-    orbit.enabled = true; orbit.enableDamping = true; orbit.enablePan = false;
-    orbit.addEventListener('start', () => { spinIdle = false; });
+    if (!orbit.__at) {
+      orbit.__at = true; orbit.enableDamping = true; orbit.dampingFactor = 0.08;
+      orbit.enablePan = true; orbit.screenSpacePanning = true; orbit.panSpeed = 1.0; orbit.zoomToCursor = true;
+      orbit.listenToKeyEvents(window);                              // arrow keys pan too
+      orbit.addEventListener('start', () => { spinIdle = false; });
+    }
+    orbit.enabled = true;
+    document.body.classList.add('studio');
     $('hud').classList.add('hidden'); $('studio-ui').classList.remove('hidden'); fillPanelHTML(o); setViewOffset(true);
   }
   drawVRPanel(); placeStudio(); hideLoading();
@@ -325,23 +406,20 @@ async function closeObject() {
   studio.visible = false; panoGroup.visible = true; scene.background = null; scene.environment = null;
   if (orbit) { orbit.enabled = false; }
   if (!renderer.xr.isPresenting) {
-    camera.position.set(0, 0, 0); applyLook(); setViewOffset(false);
+    camera.position.set(0, 0, 0); applyLook(); setViewOffset(false); document.body.classList.remove('studio');
     $('studio-ui').classList.add('hidden'); $('hud').classList.remove('hidden');
   } else { layoutFloorPlan(); floorPlan.visible = true; }
   current = null; vrPanel.visible = false;
   await fadeTo(0, 320);
 }
-function toggleReal() { if (!current) return; current.real = !current.real; placeStudio(); updateScaleLabels(); }
-function resetStudio() { if (!current) return; pivot.quaternion.identity(); zoom = 1; placeStudio(); }
-function updateScaleLabels() { $('btn-scale').textContent = current && current.real ? 'Fit to view' : 'Real size'; drawVRPanel(); }
-function sizeText(o) { const [x, y, z] = o.size_m; return `${x.toFixed(2)} × ${z.toFixed(2)} m, ${y.toFixed(2)} m high`; }
+function resetStudio() { if (!current) return; pivot.quaternion.identity(); zoom = 1; spinIdle = false; placeStudio(); }
+function sizeText(o) { const [x, y, z] = o.size_m; return `${num(x)} × ${num(z)} m, ${num(y)} m ${T('high')}`; }
 function fillPanelHTML(o) {
-  $('p-sub').textContent = o.sub; $('p-title').textContent = o.title; $('p-text').textContent = o.text;
-  $('p-size').textContent = sizeText(o); $('p-ev').textContent = o.ev; $('p-src').textContent = o.src;
+  $('p-sub').textContent = L(o, 'sub'); $('p-title').textContent = L(o, 'title'); $('p-text').textContent = L(o, 'text');
+  $('p-size').textContent = sizeText(o); $('p-ev').textContent = L(o, 'ev'); $('p-src').textContent = o.src;
   const img = $('p-img'); if (o.image) { img.src = o.image; img.classList.remove('hidden'); } else img.classList.add('hidden');
-  updateScaleLabels();
 }
-$('btn-back').onclick = closeObject; $('btn-scale').onclick = toggleReal; $('btn-reset').onclick = resetStudio;
+$('btn-back').onclick = closeObject; $('btn-reset').onclick = resetStudio;
 
 // VR info panel (canvas texture) with three buttons
 const PW = 1024, PH = 1400;
@@ -361,36 +439,35 @@ function drawVRPanel(hover = -1) {
   g.clearRect(0, 0, PW, PH); g.fillStyle = 'rgba(14,14,18,0.9)'; roundRect(g, 0, 0, PW, PH, 36); g.fill();
   g.strokeStyle = 'rgba(214,170,84,0.45)'; g.lineWidth = 3; roundRect(g, 2, 2, PW - 4, PH - 4, 34); g.stroke();
   let y = 92; g.textAlign = 'left';
-  g.fillStyle = '#d6aa54'; g.font = `500 30px ${FONT}`; g.fillText(o.sub.toUpperCase(), 60, y); y += 70;
-  g.fillStyle = '#ece6da'; g.font = `300 62px ${FONT}`; y = wrapText(g, o.title, 60, y, PW - 120, 70) + 10;
+  g.fillStyle = '#d6aa54'; g.font = `500 30px ${FONT}`; g.fillText(L(o, 'sub').toUpperCase(), 60, y); y += 70;
+  g.fillStyle = '#ece6da'; g.font = `300 62px ${FONT}`; y = wrapText(g, L(o, 'title'), 60, y, PW - 120, 70) + 10;
   if (o.image) { const im = getImg(o.image); if (im.complete && im.naturalWidth) { const h = (PW - 120) * im.naturalHeight / im.naturalWidth; g.drawImage(im, 60, y, PW - 120, h); y += h + 30; } }
-  g.fillStyle = '#ddd6c8'; g.font = `400 32px ${FONT}`; y = wrapText(g, o.text, 60, y + 10, PW - 120, 44) + 16;
+  g.fillStyle = '#ddd6c8'; g.font = `400 32px ${FONT}`; y = wrapText(g, L(o, 'text'), 60, y + 10, PW - 120, 44) + 16;
   g.font = `400 26px ${FONT}`;
-  for (const [k, v] of [['SIZE', sizeText(o)], ['EVIDENCE', o.ev], ['SOURCE', o.src]]) {
+  for (const [k, v] of [[T('size').toUpperCase(), sizeText(o)], [T('evidence').toUpperCase(), L(o, 'ev')], [T('source').toUpperCase(), o.src]]) {
     g.fillStyle = '#d6aa54'; g.fillText(k, 60, y); g.fillStyle = '#a39c8f'; y = wrapText(g, v, 230, y, PW - 290, 36) + 8;
   }
-  const labels = ['Back to the temple', current.real ? 'Fit to view' : 'Real size', 'Reset'];
-  const ws = [380, 260, 180]; let x = 60; const by = PH - 140; panelButtons = [];
+  const labels = [T('vrBack'), T('vrReset')];
+  const ws = [420, 260]; let x = 60; const by = PH - 170; panelButtons = [];
   labels.forEach((t, i) => {
     g.fillStyle = i === 0 ? (hover === 0 ? '#e9c272' : '#d6aa54') : (hover === i ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.08)');
     roundRect(g, x, by, ws[i], 90, 45); g.fill();
     g.strokeStyle = 'rgba(236,230,218,0.35)'; g.lineWidth = 2; if (i) g.stroke();
     g.fillStyle = i === 0 ? '#16120a' : '#ece6da'; g.font = `600 32px ${FONT}`; g.textAlign = 'center'; g.fillText(t, x + ws[i] / 2, by + 56); g.textAlign = 'left';
-    panelButtons.push({ x0: x / PW, x1: (x + ws[i]) / PW, y0: 1 - (by + 90) / PH, y1: 1 - by / PH, act: [closeObject, toggleReal, resetStudio][i] });
+    panelButtons.push({ x0: x / PW, x1: (x + ws[i]) / PW, y0: 1 - (by + 90) / PH, y1: 1 - by / PH, act: [closeObject, resetStudio][i] });
     x += ws[i] + 22;
   });
   g.fillStyle = '#7d776c'; g.font = `400 24px ${FONT}`;
-  g.fillText('Trigger + twist: turn · thumbstick: turn, zoom · grip: back', 60, PH - 24);
+  wrapText(g, T('vrHint'), 60, PH - 50, PW - 120, 30);
   panelTex.needsUpdate = true;
 }
 function positionPanel() {
   if (!renderer.xr.isPresenting || !current) { vrPanel.visible = false; return; }
   const head = new THREE.Vector3(); renderer.xr.getCamera().getWorldPosition(head);
-  const right = new THREE.Vector3(1, 0, 0).applyQuaternion(holder.quaternion);
-  const toView = new THREE.Vector3(0, 0, 1).applyQuaternion(holder.quaternion);
-  const R = current.real ? 0 : FIT_SIZE / 2;
-  const base = current.real ? head.clone().add(toView.clone().multiplyScalar(-0.9)) : holder.position.clone();
-  vrPanel.position.copy(base).add(right.multiplyScalar(R + 0.62)); vrPanel.position.y = head.y - 0.1;
+  const q = current.homeQ || holder.quaternion;
+  const right = new THREE.Vector3(1, 0, 0).applyQuaternion(q);
+  const toView = new THREE.Vector3(0, 0, 1).applyQuaternion(q);
+  vrPanel.position.copy(head).add(toView.multiplyScalar(-1.1)).add(right.multiplyScalar(0.75)); vrPanel.position.y = head.y - 0.12;
   vrPanel.lookAt(head.x, vrPanel.position.y, head.z); vrPanel.visible = true;
 }
 
@@ -470,7 +547,7 @@ for (let i = 0; i < 2; i++) {
   const dot = new THREE.Mesh(new THREE.SphereGeometry(0.012), new THREE.MeshBasicMaterial({ color: 0xffffff, depthTest: false }));
   dot.renderOrder = 50; dot.visible = false; c.add(dot);
   c.userData = { line, dot, hover: null, drag: null, gamepad: null };
-  c.addEventListener('connected', (e) => { c.userData.gamepad = e.data.gamepad; c.userData.hand = !!e.data.hand; });
+  c.addEventListener('connected', (e) => { c.userData.gamepad = e.data.gamepad; c.userData.hand = !!e.data.hand; c.userData.side = e.data.handedness; });
   c.addEventListener('disconnected', () => { c.userData.gamepad = null; });
   c.addEventListener('selectstart', () => onSelectStart(c));
   c.addEventListener('selectend', () => onSelectEnd(c));
@@ -528,7 +605,18 @@ function xrFrame(dt) {
     if (gp && gp.axes && gp.axes.length >= 4 && current) {
       const ax = gp.axes[2], ay = gp.axes[3];
       if (Math.abs(ax) > 0.15) { pivot.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), ax * dt * 1.8); spinIdle = false; }
-      if (Math.abs(ay) > 0.15) { zoom = THREE.MathUtils.clamp(zoom * (1 - ay * dt * 1.2), 0.3, 4); pivot.scale.setScalar(current.baseScale * zoom); }
+      if (Math.abs(ay) > 0.15) {
+        if (c.userData.side === 'left') {                           // left stick: lift the object up / down
+          holder.position.y = THREE.MathUtils.clamp(holder.position.y - ay * dt * 2.0, -40, 60);
+        } else {                                                    // right stick: bring it nearer / push it away
+          const head = new THREE.Vector3(); renderer.xr.getCamera().getWorldPosition(head);
+          const v = holder.position.clone().sub(head); v.y = 0; const dd = v.length();
+          const nd = THREE.MathUtils.clamp(dd * (1 + ay * dt * 1.2), 0.6, 40);
+          if (dd > 1e-3) { v.multiplyScalar(nd / dd); holder.position.x = head.x + v.x; holder.position.z = head.z + v.z; }
+          floor.position.set(holder.position.x, 0, holder.position.z); shadowCatcher.position.set(holder.position.x, 0.002, holder.position.z);
+        }
+        spinIdle = false;
+      }
     }
   }
   if (!current) setHover(anyMarker);
@@ -538,9 +626,9 @@ const xrBtn = $('btn-vr');
 const SESSION_INIT = { optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking', 'layers'] };
 if (navigator.xr) {
   navigator.xr.isSessionSupported('immersive-vr').then((ok) => {
-    xrBtn.disabled = !ok; xrBtn.textContent = ok ? 'Enter VR' : 'VR not available on this device';
-  }).catch(() => { xrBtn.textContent = 'VR not available'; });
-} else { xrBtn.textContent = 'VR needs a headset browser (https)'; }
+    xrBtn.disabled = !ok; xrState = ok ? 'ok' : 'no'; applyLang();
+  }).catch(() => { xrState = 'no'; applyLang(); });
+} else { xrState = 'https'; applyLang(); }
 xrBtn.onclick = async () => {
   const s = await navigator.xr.requestSession('immersive-vr', SESSION_INIT);
   await start(); renderer.xr.setSession(s);
@@ -549,6 +637,7 @@ renderer.xr.addEventListener('sessionstart', () => {
   scene.remove(camera); rig.add(camera); camera.position.set(0, 0, 0); camera.rotation.set(0, 0, 0); camera.clearViewOffset(); camera.fov = 75; camera.updateProjectionMatrix();
   $('hud').classList.add('hidden'); $('studio-ui').classList.add('hidden');
   if (orbit) orbit.enabled = false;
+  document.body.classList.remove('studio');
   if (current) { placeStudio(); } else { layoutFloorPlan(); floorPlan.visible = true; }
 });
 renderer.xr.addEventListener('sessionend', () => {
@@ -584,20 +673,20 @@ async function start() {
 }
 $('btn-2d').onclick = () => start();
 await goPano('Court_W', { fade: false });
-$('load-status').textContent = HI_RES ? 'Ready · 8K panoramas' : 'Ready · 4K panoramas';
+readyShown = true; $('load-status').textContent = HI_RES ? T('ready8') : T('ready4');
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 // offline: fetch every asset this device needs, so the service worker keeps it
 $('btn-offline').onclick = async () => {
   const st = $('offline-status');
-  if (!('serviceWorker' in navigator)) { st.textContent = 'Offline use is not supported in this browser.'; return; }
+  if (!('serviceWorker' in navigator)) { st.textContent = T('offNo'); return; }
   await navigator.serviceWorker.ready;
   const list = await fetch('data/files.json').then((r) => r.json());
   const urls = list.core.concat(list.models, HI_RES ? list.panos8k : list.panos4k);
   let n = 0;
-  for (const u of urls) { await fetch(u).catch(() => {}); st.textContent = `Saving ${++n} / ${urls.length}`; }
-  st.textContent = `Saved: ${urls.length} files. The page now works without internet in this browser.`;
+  for (const u of urls) { await fetch(u).catch(() => {}); st.textContent = `${T('offSaving')} ${++n} / ${urls.length}`; }
+  st.textContent = T('offDone').replace('{n}', urls.length);
 };
 window.__AT = { goPano, openObject, closeObject, PANOS, OBJECTS };   // for testing
 // deep links for testing / presenting: #pano=Cella  #obj=statue  #start

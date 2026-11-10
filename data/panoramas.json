@@ -106,7 +106,8 @@
     "panos/AT_360_Court_W_8k_r1c0.jpg",
     "panos/AT_360_Court_W_8k_r1c1.jpg"
    ],
-   "heading_deg": 0.0
+   "heading_deg": 0.0,
+   "title_it": "Davanti al tempio"
   },
   {
    "id": "Pteron_SW",
@@ -203,7 +204,8 @@
     "panos/AT_360_Pteron_SW_8k_r1c0.jpg",
     "panos/AT_360_Pteron_SW_8k_r1c1.jpg"
    ],
-   "heading_deg": 0.0
+   "heading_deg": 0.0,
+   "title_it": "Sotto il colonnato"
   },
   {
    "id": "Cella",
@@ -256,7 +258,8 @@
     "panos/AT_360_Cella_8k_r1c0.jpg",
     "panos/AT_360_Cella_8k_r1c1.jpg"
    ],
-   "heading_deg": 0.0
+   "heading_deg": 0.0,
+   "title_it": "Dentro la cella"
   },
   {
    "id": "East_back",
@@ -342,7 +345,8 @@
     "panos/AT_360_East_back_8k_r1c0.jpg",
     "panos/AT_360_East_back_8k_r1c1.jpg"
    ],
-   "heading_deg": 180.0
+   "heading_deg": 180.0,
+   "title_it": "Dietro il tempio"
   }
  ]
 }
