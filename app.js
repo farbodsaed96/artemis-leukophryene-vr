@@ -89,6 +89,7 @@ function applyLang() {
   document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = T(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-title]').forEach((el) => { el.title = T(el.dataset.i18nTitle); el.setAttribute('aria-label', el.title); });
   document.documentElement.style.setProperty('--langw', $('lang').offsetWidth + 'px');
+  document.documentElement.style.setProperty('--langh', $('lang').offsetHeight + 'px');
   const nm = $('h-name'); nm.innerHTML = ''; [...T('name')].forEach((ch, i, a) => {
     const sp = document.createElement('span'); sp.className = 'ch'; sp.textContent = ch;
     sp.style.setProperty('--d', (1.15 + 0.12 * i) + 's'); sp.style.setProperty('--o', (0.03 * Math.abs(i - (a.length - 1) / 2)) + 's'); nm.appendChild(sp); });
@@ -752,7 +753,7 @@ const introMat = new THREE.ShaderMaterial({
       vec3 pcol = clamp(stone * (0.78 + 0.5 * mix(h1, h2, step(p1, p2))) + 0.045, 0.0, 1.0);
       vec3 tem = sky0;
       float drawn = 1.0 - ss(uDraw - 10.0, uDraw, el);
-      tem = mix(tem, LINE * (1.0 + 0.6 * ss(uDraw - 10.0, uDraw, el)), clamp(ax.r * 1.25, 0.0, 1.0) * wl * drawn);
+      tem = mix(tem, LINE * (1.0 + 0.6 * ss(uDraw - 10.0, uDraw, el)), smoothstep(0.04, 0.6, ax.r) * wl * drawn);
       tem = mix(tem, mix(pcol, stone, g2), clamp(pc + g2, 0.0, 1.0) * (1.0 - ar));
       tem = mix(tem, stone, ar);
       // ground: the night stone, dimmed, fading to navy below
@@ -804,14 +805,21 @@ function layoutHero() {
 }
 window.__layoutHero = layoutHero;
 const placeOn = $('h-place-on'), _mv = new THREE.Vector3(), _mt = new THREE.Vector3();
-function moonClip() {                                       // the place name turns cream where it crosses the moon
+const HERO_MOBILE = matchMedia('(max-width:760px), (orientation:portrait)');
+const _ax = new THREE.Vector3(), _ay = new THREE.Vector3(), _q = new THREE.Vector3();
+function moonClip() {                                       // phone: the place name turns cream exactly where it crosses the moon
+  if (!HERO_MOBILE.matches || HERO.moonA < 0.05) { placeOn.style.clipPath = 'polygon(0 0,0 0,0 0)'; return; }
   camera.updateMatrixWorld();
-  _mv.copy(introU.uMoonDir.value).multiplyScalar(50).applyEuler(panoGroup.rotation).add(camPos).project(camera);
-  const e = HERO.moonEl + THREE.MathUtils.radToDeg(introU.uMoonR.value);
-  _mt.copy(elevDir(e)).multiplyScalar(50).add(camPos).project(camera);
-  const mx = (_mv.x + 1) / 2 * innerWidth, my = (1 - _mv.y) / 2 * innerHeight, mr = Math.abs(_mt.y - _mv.y) / 2 * innerHeight;
-  const r = placeOn.getBoundingClientRect();
-  placeOn.style.clipPath = HERO.moonA > 0.05 ? `circle(${mr.toFixed(1)}px at ${(mx - r.left).toFixed(1)}px ${(my - r.top).toFixed(1)}px)` : 'circle(0px at -999px -999px)';
+  const c = introU.uMoonDir.value, R = introU.uMoonR.value, r = placeOn.getBoundingClientRect();
+  _ax.set(0, 1, 0).cross(c).normalize(); _ay.copy(c).cross(_ax).normalize();      // two axes across the moon's direction
+  const pts = [];
+  for (let i = 0; i < 72; i++) {                            // the moon's true outline (a cone of radius R around its direction), projected
+    const a = i / 72 * Math.PI * 2;
+    _q.copy(c).multiplyScalar(Math.cos(R)).addScaledVector(_ax, Math.sin(R) * Math.cos(a)).addScaledVector(_ay, Math.sin(R) * Math.sin(a))
+      .multiplyScalar(50).applyEuler(panoGroup.rotation).add(camPos).project(camera);
+    pts.push(`${((_q.x + 1) / 2 * innerWidth - r.left).toFixed(1)}px ${((1 - _q.y) / 2 * innerHeight - r.top).toFixed(1)}px`);
+  }
+  placeOn.style.clipPath = `polygon(${pts.join(',')})`;
 }
 function heroCam() { lookYaw = HERO.yaw; lookPitch = D2R(HERO.pitch); applyLook(); if (camera.fov !== HERO.fov) { camera.fov = HERO.fov; camera.updateProjectionMatrix(); } }
 const par = { x: 0, y: 0, tx: 0, ty: 0 };
@@ -830,7 +838,7 @@ function heroTick(dt) {
 let heroReady = false;
 async function loadIntro() {
   const tl = new THREE.TextureLoader();
-  const aux = (HI_RES && renderer.capabilities.maxTextureSize >= 8192) ? 'img/intro_Court_W_8k.png' : 'img/intro_Court_W_4k.png';
+  const aux = (HI_RES && renderer.capabilities.maxTextureSize >= 8192) ? 'img/intro_Court_W_rv_8k.png' : 'img/intro_Court_W_rv_4k.png';
   const [a, p] = await Promise.all([tl.loadAsync(aux), tl.loadAsync(panoById.Court_W.image_phone)]);
   for (const t of [a, p]) { t.colorSpace = THREE.NoColorSpace; t.anisotropy = 4; }
   introU.uAux.value = a; introU.uPano.value = p;
