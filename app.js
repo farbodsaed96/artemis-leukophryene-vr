@@ -792,23 +792,30 @@ function layoutHero() {
   const W = innerWidth, H = innerHeight, portrait = W / H < 1, tg = heroTarget();
   const pad = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pad')) || Math.max(18, Math.min(56, W * 0.036));
   const nm = $('h-name'), box = document.querySelector('.h-title');
-  const tw = portrait ? W - 2 * pad : Math.min(W * 0.6, H * 1.08);
+  let tw = portrait ? W - 2 * pad : Math.min(W * 0.6, H * 1.08);
   introU.uMoonR.value = D2R(portrait ? 15.5 : 11.5);
-  box.style.left = ((W - tw) / 2) + 'px'; box.style.right = 'auto'; box.style.width = tw + 'px';
-  nm.style.display = 'inline-block'; nm.style.fontSize = '100px';
-  const w100 = nm.getBoundingClientRect().width; nm.style.fontSize = (100 * tw / Math.max(w100, 1)) + 'px';
   // as on the cover: the hairline crosses the moon, the two names sit between it and the ridge of the roof
   const yTop = screenY(MOON_EL + THREE.MathUtils.radToDeg(introU.uMoonR.value), tg), yApex = screenY(APEX_EL, tg);
   const rule = box.querySelector('.h-rule'), sub = box.querySelector('.h-sub');
-  const want = Math.min(yTop + (yApex - yTop) * 0.5, yApex - sub.offsetHeight - 0.9 * parseFloat(getComputedStyle(rule).marginBottom) - 14) - rule.offsetTop;
-  box.style.top = Math.max(H * (portrait ? 0.16 : 0.13), want) + 'px';
+  const minTop = H * (portrait ? 0.16 : 0.11);
+  let want = 0;
+  for (let it = 0; it < 4; it++) {                          // short, wide windows: make the title smaller rather than let it slide onto the roof
+    box.style.left = ((W - tw) / 2) + 'px'; box.style.right = 'auto'; box.style.width = tw + 'px';
+    nm.style.display = 'inline-block'; nm.style.fontSize = '100px';
+    const w100 = nm.getBoundingClientRect().width; nm.style.fontSize = (100 * tw / Math.max(w100, 1)) + 'px';
+    const ruleY = Math.min(yTop + (yApex - yTop) * 0.5, yApex - sub.offsetHeight - 0.9 * parseFloat(getComputedStyle(rule).marginBottom) - 14);
+    want = ruleY - rule.offsetTop;
+    if (want >= minTop || portrait) break;
+    tw *= Math.max(0.6, (ruleY - minTop) / rule.offsetTop);
+  }
+  box.style.top = Math.max(minTop, want) + 'px';
 }
 window.__layoutHero = layoutHero;
 const placeOn = $('h-place-on'), _mv = new THREE.Vector3(), _mt = new THREE.Vector3();
 const HERO_MOBILE = matchMedia('(max-width:760px), (orientation:portrait)');
 const _ax = new THREE.Vector3(), _ay = new THREE.Vector3(), _q = new THREE.Vector3();
-function moonClip() {                                       // phone: the place name turns cream exactly where it crosses the moon
-  if (!HERO_MOBILE.matches || HERO.moonA < 0.05) { placeOn.style.clipPath = 'polygon(0 0,0 0,0 0)'; return; }
+function moonClip() {                                       // the place name turns cream exactly where it crosses the moon (every frame)
+  if (HERO.moonA < 0.05) { placeOn.style.clipPath = 'polygon(0 0,0 0,0 0)'; return; }
   camera.updateMatrixWorld();
   const c = introU.uMoonDir.value, R = introU.uMoonR.value, r = placeOn.getBoundingClientRect();
   _ax.set(0, 1, 0).cross(c).normalize(); _ay.copy(c).cross(_ax).normalize();      // two axes across the moon's direction
