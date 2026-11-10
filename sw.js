@@ -1,6 +1,6 @@
-// service worker v3: pages, code and data = network first (always the newest when online, cached copy offline);
+// service worker v4: pages, code and data = network first (always the newest when online, cached copy offline);
 // panoramas, models and images = cache first (large, they never change under the same name)
-const CACHE = 'artemis-vr-v3';
+const CACHE = 'artemis-vr-v4';
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => fetch('data/files.json', { cache: 'no-store' }).then((r) => r.json()).then((l) => c.addAll(l.core))).then(() => self.skipWaiting()));
 });

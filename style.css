@@ -45,10 +45,9 @@ body.studio #lang { right:min(436px,calc(100vw - 110px)); }
 #panel dd { margin:0; }
 #studio-hint { right:auto; left:18px; text-align:left; }
 @media (max-width:760px) {
-  #studio-ui #panel { top:auto; height:46vh; width:100vw; border-left:0; border-top:1px solid rgba(232,88,58,.25); padding:18px; }
   #panel h2 { font-size:22px; }
   #studio-hint { bottom:auto; top:14px; }
-  #mapbox { width:66vw; padding:8px 10px 6px; }
+  #mapbox { padding:8px 10px 6px; }
   .map-sub { display:none; }
   body.studio #lang { right:16px; }
   #hint { display:none; }
@@ -149,3 +148,53 @@ body.is-hero #lang { opacity:.85; }
   .h-sub { letter-spacing:.2em; font-size:10px; }
 }
 @media (prefers-reduced-motion:reduce) { #hero * { transition-duration:.01s !important; animation:none !important; } }
+
+/* ---------------------------------------------------------------- v1.3.1: icon buttons, map toggle, home, compact studio */
+button.icon { width:40px; height:40px; padding:0; display:inline-flex; align-items:center; justify-content:center; border-radius:50%;
+  background:rgba(10,11,20,.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border:1px solid rgba(241,233,217,.2); }
+button.icon svg { width:20px; height:20px; fill:none; stroke:var(--cream); stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+button.icon:hover { background:rgba(232,88,58,.85); border-color:var(--red); }
+button.icon.sm { width:28px; height:28px; background:transparent; border-color:transparent; backdrop-filter:none; }
+button.icon.sm svg { width:16px; height:16px; }
+button.icon.sm:hover { background:rgba(241,233,217,.1); border-color:transparent; }
+#btn-home { position:fixed; top:11px; right:calc(16px + var(--langw,92px) + 8px); z-index:30; width:34px; height:34px; }
+#btn-home svg { width:17px; height:17px; }
+body.studio #btn-home { right:calc(min(436px,calc(100vw - 110px)) + var(--langw,92px) + 8px); }
+#btn-map { position:fixed; left:16px; bottom:16px; display:inline-flex; align-items:center; gap:9px; padding:9px 16px 9px 12px; font-size:12px; letter-spacing:.14em;
+  text-transform:uppercase; background:rgba(10,11,20,.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-color:rgba(241,233,217,.2); }
+#btn-map svg { width:18px; height:18px; fill:none; stroke:var(--cream); stroke-width:1.5; stroke-linejoin:round; }
+#btn-map:hover { background:rgba(232,88,58,.85); border-color:var(--red); }
+#mapbox { transition:opacity .35s var(--ease), transform .45s var(--ease); transform-origin:0 100%; }
+#mapbox.closed { opacity:0; transform:scale(.92) translateY(10px); pointer-events:none; }
+#btn-map { transition:opacity .3s ease, background .2s; }
+#hud.map-open #btn-map { opacity:0; pointer-events:none; }
+.map-head { position:relative; padding-right:30px; }
+#btn-map-x { position:absolute; right:-6px; top:-6px; }
+#s-fabs { display:none; }
+#p-close { display:none; }
+
+/* compact screens (phones, small landscape): the object keeps the whole screen; info is a sheet you open and close */
+@media (max-width:760px), (max-height:500px) {
+  #s-fabs { display:flex; flex-direction:column; gap:12px; position:fixed; left:14px; top:50%; transform:translateY(-50%); z-index:15; }
+  #s-fabs button.icon { width:46px; height:46px; }
+  #s-fabs button.icon svg { width:21px; height:21px; }
+  body.info-open #s-info { background:var(--red); border-color:var(--red); }
+  #studio-ui #panel { transition:transform .45s var(--ease), opacity .3s ease; z-index:14; }
+  body:not(.info-open) #studio-ui #panel { transform:translateY(105%); opacity:0; pointer-events:none; }
+  #panel .btns { display:none; }
+  #p-close { display:inline-flex; position:absolute; right:10px; top:10px; }
+  #studio-hint { display:none; }
+}
+@media (max-width:760px) {
+  #studio-ui #panel { top:auto; height:52vh; width:100vw; border-left:0; border-top:1px solid rgba(232,88,58,.25); border-radius:18px 18px 0 0; padding:18px 18px 24px; }
+  #btn-map { left:12px; bottom:12px; }
+  #mapbox { left:10px; bottom:10px; width:calc(100vw - 20px); }
+  body.studio #btn-home { right:calc(16px + var(--langw,92px) + 8px); }
+  body.info-open #s-fabs { top:25vh; }
+}
+@media (max-height:500px) and (min-width:761px) {
+  #studio-ui #panel { width:min(50vw,420px); padding:18px 22px; }
+  body:not(.info-open) #studio-ui #panel { transform:translateX(105%); }
+  body.studio #lang { right:16px; } body.studio #btn-home { right:calc(16px + var(--langw,92px) + 8px); }
+  #mapbox { width:min(46vw,380px); }
+}

@@ -16,6 +16,7 @@
 <body class="is-hero">
 <div id="app"></div>
 
+<button id="btn-home" class="icon hidden" data-i18n-title="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5M6.5 10v9h4v-5h3v5h4v-9"/></svg></button>
 <div id="lang" role="group" aria-label="Language">
   <button data-lang="en">EN</button><span>·</span><button data-lang="it">IT</button>
 </div>
@@ -59,8 +60,9 @@
 
 <div id="hud" class="hidden">
   <div id="where"><span class="kicker" data-i18n="viewpoint"></span><span id="where-name"></span></div>
-  <div id="mapbox">
-    <div class="map-head"><span class="kicker" data-i18n="mapTitle"></span><span class="map-sub" data-i18n="mapSub"></span></div>
+  <button id="btn-map" class="pill" data-i18n-title="mapOpen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5 9 4.5l6 2 5.5-2v13l-5.5 2-6-2-5.5 2zM9 4.5v13M15 6.5v13"/></svg><span data-i18n="map"></span></button>
+  <div id="mapbox" class="closed">
+    <div class="map-head"><span class="kicker" data-i18n="mapTitle"></span><span class="map-sub" data-i18n="mapSub"></span><button id="btn-map-x" class="icon sm" data-i18n-title="close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <canvas id="minimap"></canvas>
   </div>
   <div id="hint" data-i18n="hint"></div>
@@ -68,6 +70,7 @@
 
 <div id="studio-ui" class="hidden">
   <div id="panel">
+    <button id="p-close" class="icon sm" data-i18n-title="close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     <div class="kicker" id="p-sub"></div>
     <h2 id="p-title"></h2>
     <img id="p-img" alt="">
@@ -83,6 +86,11 @@
     </div>
   </div>
   <div id="studio-hint" data-i18n="studioHint"></div>
+  <div id="s-fabs">
+    <button id="s-back" class="icon" data-i18n-title="back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M4.5 12H20"/></svg></button>
+    <button id="s-info" class="icon" data-i18n-title="info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.6v.1"/></svg></button>
+    <button id="s-reset" class="icon" data-i18n-title="reset"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 1 0 2.1-5M5 4.5V9h4.5"/></svg></button>
+  </div>
 </div>
 
 <div id="loading" class="hidden"><div class="spinner"></div><span id="loading-text"></span></div>

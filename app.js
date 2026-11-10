@@ -58,7 +58,8 @@ const STR = {
     programme: 'Master’s Degree Programme in Architecture for Sustainability', date: 'December 2026',
     pre: 'THE TEMPLE OF', name: 'ARTEMIS', epithet: 'LEUKOPHRYENE', place: 'MAGNESIA ON THE MAEANDER',
     claim: 'An evidence-based, AI-assisted HBIM reconstruction', sup: 'Supervisor  Prof. Elisabetta Caterina Giovannini',
-    enter: 'Enter the temple', scroll: 'Scroll to enter', preparing: 'Preparing the temple' },
+    enter: 'Enter the temple', scroll: 'Scroll to enter', preparing: 'Preparing the temple',
+    map: 'Plan', mapOpen: 'Show the plan', close: 'Close', home: 'Back to the start page', info: 'About this element' },
   it: { kicker: 'Magnesia al Meandro · c. 200 a.C.', title: 'Tempio di Artemide Leucofriene',
     lead: 'Una ricostruzione HBIM basata sulle evidenze e assistita dall’IA. Quattro punti di vista a 360°; gli anelli segnano gli elementi ricostruiti. Seleziona un anello per studiare l’elemento nello studio, in scala reale.',
     view2d: 'Guarda su questo schermo', enterVR: 'Entra in VR', checkVR: 'Verifica VR…', noVR: 'VR non disponibile su questo dispositivo', needHttps: 'La VR richiede il browser di un visore (https)',
@@ -74,7 +75,8 @@ const STR = {
     programme: 'Corso di Laurea Magistrale in Architettura per la Sostenibilità', date: 'Dicembre 2026',
     pre: 'IL TEMPIO DI', name: 'ARTEMIDE', epithet: 'LEUCOFRIENE', place: 'MAGNESIA AL MEANDRO',
     claim: 'Una ricostruzione HBIM basata sulle evidenze e assistita dall’IA', sup: 'Relatrice  Prof.ssa Elisabetta Caterina Giovannini',
-    enter: 'Entra nel tempio', scroll: 'Scorri per entrare', preparing: 'Preparazione del tempio' },
+    enter: 'Entra nel tempio', scroll: 'Scorri per entrare', preparing: 'Preparazione del tempio',
+    map: 'Pianta', mapOpen: 'Mostra la pianta', close: 'Chiudi', home: 'Torna alla pagina iniziale', info: 'Informazioni sull’elemento' },
 };
 let LANG = (() => { const q = location.search.match(/[?&]lang=(en|it)/); if (q) return q[1];
   try { return localStorage.getItem('at_lang') || ((navigator.language || '').startsWith('it') ? 'it' : 'en'); } catch (e) { return 'en'; } })();
@@ -85,6 +87,8 @@ let xrState = 'check', readyShown = false, currentPano = null, current = null;
 function applyLang() {
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = T(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-title]').forEach((el) => { el.title = T(el.dataset.i18nTitle); el.setAttribute('aria-label', el.title); });
+  document.documentElement.style.setProperty('--langw', $('lang').offsetWidth + 'px');
   const nm = $('h-name'); nm.innerHTML = ''; [...T('name')].forEach((ch, i, a) => {
     const sp = document.createElement('span'); sp.className = 'ch'; sp.textContent = ch;
     sp.style.setProperty('--d', (1.15 + 0.12 * i) + 's'); sp.style.setProperty('--o', (0.03 * Math.abs(i - (a.length - 1) / 2)) + 's'); nm.appendChild(sp); });
@@ -268,7 +272,7 @@ function drawPlans() {
   drawMini();
 }
 function drawMini() {
-  if ($('hud').classList.contains('hidden')) return;
+  if ($('hud').classList.contains('hidden') || $('mapbox').classList.contains('closed')) return;
   const dpr = Math.min(devicePixelRatio || 1, 2), w = Math.round(mini.clientWidth * dpr), h = Math.round(mini.clientHeight * dpr);
   if (!w || !h) return;
   if (mini.width !== w || mini.height !== h) { mini.width = w; mini.height = h; }
@@ -408,7 +412,8 @@ async function openObject(id) {
     }
     orbit.enabled = true;
     document.body.classList.add('studio');
-    $('hud').classList.add('hidden'); $('studio-ui').classList.remove('hidden'); fillPanelHTML(o); setViewOffset(true);
+    $('hud').classList.add('hidden'); $('studio-ui').classList.remove('hidden'); fillPanelHTML(o);
+    infoOpen = !COMPACT.matches; document.body.classList.toggle('info-open', infoOpen); setViewOffset(true);
   }
   drawVRPanel(); placeStudio(); hideLoading();
   await fadeTo(0, 350);
@@ -516,7 +521,8 @@ renderer.domElement.addEventListener('pointermove', (e) => {
   if (!ptr.down) { hoverPick(e); return; }
   const dx = e.clientX - ptr.x, dy = e.clientY - ptr.y; ptr.x = e.clientX; ptr.y = e.clientY; ptr.moved += Math.abs(dx) + Math.abs(dy);
   const k = camera.fov / innerHeight * Math.PI / 180;
-  lookYaw += dx * k; lookPitch = THREE.MathUtils.clamp(lookPitch + dy * k, -1.45, 1.45); applyLook();
+  const sg = e.pointerType === 'mouse' ? -1 : 1;                 // mouse: the view turns with the mouse; touch: drag the picture
+  lookYaw += sg * dx * k; lookPitch = THREE.MathUtils.clamp(lookPitch + sg * dy * k, -1.45, 1.45); applyLook();
 });
 renderer.domElement.addEventListener('pointerup', (e) => {
   pointers.delete(e.pointerId); ptr.down = pointers.size > 0;
@@ -541,10 +547,18 @@ function setHover(m) {
 function hoverPick(e) { setHover(pickMarker(e)); }
 function clickPick(e) { const m = pickMarker(e); if (m) openObject(m.userData.obj); }
 addEventListener('keydown', (e) => { if (e.key === 'Escape' && current) closeObject(); });
+const COMPACT = matchMedia('(max-width:760px), (max-height:500px)');
+let infoOpen = false;
+function setInfo(open) { infoOpen = open; document.body.classList.toggle('info-open', open); setViewOffset(!!current); }
+$('s-info').onclick = () => setInfo(!infoOpen); $('p-close').onclick = () => setInfo(false);
+$('s-back').onclick = () => closeObject(); $('s-reset').onclick = () => resetStudio();
 function setViewOffset(on) {
   if (on && !renderer.xr.isPresenting) {
     const W = innerWidth, H = innerHeight;
-    if (W > 760) camera.setViewOffset(W, H, Math.min(420, W) / 2, 0, W, H); else camera.setViewOffset(W, H, 0, H * 0.23, W, H);
+    if (!COMPACT.matches) camera.setViewOffset(W, H, Math.min(420, W) / 2, 0, W, H);
+    else if (!infoOpen) camera.clearViewOffset();
+    else if (W <= 760) camera.setViewOffset(W, H, 0, H * 0.26, W, H);
+    else camera.setViewOffset(W, H, Math.min(W * 0.5, 420) / 2, 0, W, H);
   } else camera.clearViewOffset();
   camera.updateProjectionMatrix();
 }
@@ -853,7 +867,7 @@ function finishHero() {
   HERO.active = false; HERO.day = 1; introMesh.visible = false; markerGroup.visible = true;
   for (const m of markers) m.material.opacity = 0;
   tween(900, (k) => { for (const m of markers) m.material.opacity = k; }, ease.ios, 150);
-  document.body.classList.remove('is-hero'); $('hero').classList.add('gone'); $('loader').classList.add('done');
+  document.body.classList.remove('is-hero'); $('hero').classList.add('gone'); $('loader').classList.add('done'); $('btn-home').classList.remove('hidden');
   $('hud').classList.remove('hidden');
   camera.fov = 75; camera.updateProjectionMatrix(); lookYaw = 0; lookPitch = 0; applyLook(); drawMini();
 }
@@ -864,6 +878,33 @@ addEventListener('keydown', (e) => { if (HERO.active && ['Enter', ' ', 'ArrowDow
 $('btn-enter').onclick = () => enterTemple(); $('h-scroll').onclick = () => enterTemple();
 addEventListener('resize', () => { if (HERO.active && !HERO.leaving) { const tg = heroTarget(); HERO.basePitch = tg.pitch; HERO.fov = tg.fov; layoutHero(); } });
 
+function setMap(open) {
+  $('mapbox').classList.toggle('closed', !open); $('hud').classList.toggle('map-open', open);
+  if (open) { miniHover = null; drawMini(); }
+}
+$('btn-map').onclick = () => setMap(true); $('btn-map-x').onclick = () => setMap(false);
+addEventListener('keydown', (e) => { if ((e.key === 'm' || e.key === 'M') && !HERO.active && !current) setMap($('mapbox').classList.contains('closed')); });
+// back to the start page (the cover): plays the opening again
+async function goHome() {
+  if (HERO.active) return;
+  $('btn-home').classList.add('hidden');
+  await fadeTo(1, 380);
+  if (current) {                                            // leave the studio without its own fade
+    studio.visible = false; panoGroup.visible = true; scene.background = null; scene.environment = null;
+    if (orbit) orbit.enabled = false; camera.position.set(0, 0, 0); setViewOffset(false);
+    document.body.classList.remove('studio', 'info-open'); $('studio-ui').classList.add('hidden'); current = null;
+  }
+  if (!currentPano || currentPano.id !== 'Court_W') await goPano('Court_W', { fade: false });
+  setMap(false); $('hud').classList.add('hidden'); $('hud').classList.remove('fadein');
+  Object.assign(HERO, { active: true, leaving: false, shift: -1.25, day: 0, moonA: 0, moonEl: MOON_EL - 9, draw: -20 });
+  leaving = null; introMesh.visible = true; markerGroup.visible = false;
+  const hero = $('hero'); hero.className = 'pre'; document.body.classList.add('is-hero');
+  void hero.offsetWidth;
+  if (!introU.uAux.value) await loadIntro();
+  playHeroIn(); heroTick(0);
+  await fadeTo(0, 700);
+}
+$('btn-home').onclick = goHome;
 let started = false;
 async function start() {                                    // used by Enter VR and deep links: skip the start page
   if (started) return; started = true;
