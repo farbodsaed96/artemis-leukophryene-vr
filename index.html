@@ -2,39 +2,59 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Temple of Artemis Leukophryene · VR</title>
-<meta name="theme-color" content="#0b0b0e">
+<meta name="theme-color" content="#0a0b14">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="img/icon.png">
+<link rel="preload" href="fonts/Jost-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
 <script type="importmap">
 { "imports": { "three": "./vendor/three.module.js", "three/addons/": "./vendor/jsm/" } }
 </script>
 </head>
-<body>
+<body class="is-hero">
 <div id="app"></div>
 
 <div id="lang" role="group" aria-label="Language">
   <button data-lang="en">EN</button><span>·</span><button data-lang="it">IT</button>
 </div>
 
-<div id="intro">
-  <div class="intro-card">
-    <div class="kicker" data-i18n="kicker"></div>
-    <h1 data-i18n="title"></h1>
-    <p class="lead" data-i18n="lead"></p>
-    <div class="btns">
-      <button id="btn-vr" class="primary" disabled></button>
-      <button id="btn-2d" data-i18n="view2d"></button>
-    </div>
-    <div id="load-status" class="small"></div>
-    <div class="small dim" data-i18n="credits"></div>
-    <div class="offline">
-      <button id="btn-offline" class="ghost" data-i18n="offline"></button>
-      <span id="offline-status" class="small dim"></span>
-    </div>
+<!-- start page: the book cover, alive -->
+<div id="hero" class="pre">
+  <div class="h-veil"></div>
+  <header class="h-top">
+    <div class="h-uni" data-a style="--d:3.0s;--o:.0s"><b>POLITECNICO DI TORINO</b><span data-i18n="programme"></span></div>
+    <div class="h-date" data-a data-i18n="date" style="--d:3.1s;--o:.0s"></div>
+  </header>
+  <div class="h-title">
+    <div class="h-pre" data-a data-i18n="pre" style="--d:1.5s;--o:.05s"></div>
+    <h1 class="h-name" id="h-name" data-i18n="name"></h1>
+    <div class="h-rule" style="--d:2.2s"></div>
+    <div class="h-sub" data-a style="--d:2.6s;--o:.15s"><span data-i18n="epithet"></span><span class="h-place" data-i18n="place"></span><span class="h-place h-place-on" id="h-place-on" data-i18n="place" aria-hidden="true"></span></div>
   </div>
+  <footer class="h-bottom">
+    <div class="h-left" data-a style="--d:3.3s;--o:0s">
+      <div class="h-claim" data-i18n="claim"></div>
+      <div class="h-author">FARBOD SAED</div>
+      <div class="h-sup" data-i18n="sup"></div>
+    </div>
+    <div class="h-right" data-a style="--d:3.6s;--o:0s">
+      <div class="h-cta">
+        <button id="btn-enter" class="primary"><span data-i18n="enter"></span><i class="arr"></i></button>
+        <button id="btn-vr" class="hidden" disabled></button>
+      </div>
+      <div class="h-meta"><button id="btn-offline" class="link" data-i18n="offline"></button><span id="offline-status"></span>
+        <span class="h-coord">37°51′12″N&nbsp;&nbsp;27°31′39″E</span></div>
+    </div>
+  </footer>
+  <button class="h-scroll" id="h-scroll" aria-label="enter" data-a style="--d:4.4s;--o:0s"><span data-i18n="scroll"></span><i></i></button>
+</div>
+
+<div id="loader">
+  <div class="l-name" data-i18n="name">ARTEMIS</div>
+  <div class="l-bar"><i id="l-fill"></i></div>
+  <div class="l-txt" id="load-status"></div>
 </div>
 
 <div id="hud" class="hidden">

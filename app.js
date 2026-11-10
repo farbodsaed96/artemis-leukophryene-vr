@@ -54,7 +54,11 @@ const STR = {
     studioHint: 'Drag to turn · right-drag or two fingers to move · scroll or pinch to zoom',
     size: 'Size', evidence: 'Evidence', source: 'Source', back: '← Back to the temple', reset: 'Reset view', high: 'high',
     vrBack: 'Back to the temple', vrReset: 'Reset',
-    vrHint: 'Trigger + twist: turn · left stick: up / down · right stick: turn, nearer / farther · grip: back' },
+    vrHint: 'Trigger + twist: turn · left stick: up / down · right stick: turn, nearer / farther · grip: back',
+    programme: 'Master’s Degree Programme in Architecture for Sustainability', date: 'December 2026',
+    pre: 'THE TEMPLE OF', name: 'ARTEMIS', epithet: 'LEUKOPHRYENE', place: 'MAGNESIA ON THE MAEANDER',
+    claim: 'An evidence-based, AI-assisted HBIM reconstruction', sup: 'Supervisor  Prof. Elisabetta Caterina Giovannini',
+    enter: 'Enter the temple', scroll: 'Scroll to enter', preparing: 'Preparing the temple' },
   it: { kicker: 'Magnesia al Meandro · c. 200 a.C.', title: 'Tempio di Artemide Leucofriene',
     lead: 'Una ricostruzione HBIM basata sulle evidenze e assistita dall’IA. Quattro punti di vista a 360°; gli anelli segnano gli elementi ricostruiti. Seleziona un anello per studiare l’elemento nello studio, in scala reale.',
     view2d: 'Guarda su questo schermo', enterVR: 'Entra in VR', checkVR: 'Verifica VR…', noVR: 'VR non disponibile su questo dispositivo', needHttps: 'La VR richiede il browser di un visore (https)',
@@ -66,7 +70,11 @@ const STR = {
     studioHint: 'Trascina per ruotare · tasto destro o due dita per spostare · rotella o pizzico per lo zoom',
     size: 'Dimensioni', evidence: 'Affidabilità', source: 'Fonte', back: '← Torna al tempio', reset: 'Reimposta vista', high: 'di altezza',
     vrBack: 'Torna al tempio', vrReset: 'Reimposta',
-    vrHint: 'Grilletto + polso: ruota · stick sinistro: su / giù · stick destro: ruota, avvicina / allontana · grip: indietro' },
+    vrHint: 'Grilletto + polso: ruota · stick sinistro: su / giù · stick destro: ruota, avvicina / allontana · grip: indietro',
+    programme: 'Corso di Laurea Magistrale in Architettura per la Sostenibilità', date: 'Dicembre 2026',
+    pre: 'IL TEMPIO DI', name: 'ARTEMIDE', epithet: 'LEUCOFRIENE', place: 'MAGNESIA AL MEANDRO',
+    claim: 'Una ricostruzione HBIM basata sulle evidenze e assistita dall’IA', sup: 'Relatrice  Prof.ssa Elisabetta Caterina Giovannini',
+    enter: 'Entra nel tempio', scroll: 'Scorri per entrare', preparing: 'Preparazione del tempio' },
 };
 let LANG = (() => { const q = location.search.match(/[?&]lang=(en|it)/); if (q) return q[1];
   try { return localStorage.getItem('at_lang') || ((navigator.language || '').startsWith('it') ? 'it' : 'en'); } catch (e) { return 'en'; } })();
@@ -77,6 +85,10 @@ let xrState = 'check', readyShown = false, currentPano = null, current = null;
 function applyLang() {
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = T(el.dataset.i18n); });
+  const nm = $('h-name'); nm.innerHTML = ''; [...T('name')].forEach((ch, i, a) => {
+    const sp = document.createElement('span'); sp.className = 'ch'; sp.textContent = ch;
+    sp.style.setProperty('--d', (1.15 + 0.12 * i) + 's'); sp.style.setProperty('--o', (0.03 * Math.abs(i - (a.length - 1) / 2)) + 's'); nm.appendChild(sp); });
+  if (window.__layoutHero) window.__layoutHero();
   document.querySelectorAll('#lang button').forEach((b) => b.classList.toggle('on', b.dataset.lang === LANG));
   document.title = T('title') + ' · VR';
   $('btn-vr').textContent = T({ check: 'checkVR', ok: 'enterVR', no: 'noVR', https: 'needHttps' }[xrState]);
@@ -114,12 +126,12 @@ const FONT = '"Jost","Futura","Avenir Next","Segoe UI",system-ui,sans-serif';
 const panoGroup = new THREE.Group(); scene.add(panoGroup);
 // 8K panoramas come as 2 x 2 tiles of 4096 x 2048 (small files, easy on the GPU); 4K as one image
 const sphereGeo = new THREE.SphereGeometry(100, 128, 64); sphereGeo.scale(-1, 1, 1);
-const sphereMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+const sphereMat = new THREE.MeshBasicMaterial({ color: 0x000000, toneMapped: false });
 const sphere = new THREE.Mesh(sphereGeo, sphereMat); sphere.renderOrder = -10; panoGroup.add(sphere);
 const tiles = [];
 for (let r = 0; r < 2; r++) for (let c = 0; c < 2; c++) {
   const g = new THREE.SphereGeometry(100, 64, 32, c * Math.PI, Math.PI, r * Math.PI / 2, Math.PI / 2); g.scale(-1, 1, 1);
-  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: 0x000000 })); m.renderOrder = -10; m.visible = false;
+  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: 0x000000, toneMapped: false })); m.renderOrder = -10; m.visible = false;
   panoGroup.add(m); tiles.push(m);
 }
 const markerGroup = new THREE.Group(); panoGroup.add(markerGroup);
@@ -132,7 +144,7 @@ function markerTexture() {
   grd.addColorStop(0, 'rgba(0,0,0,0.35)'); grd.addColorStop(1, 'rgba(0,0,0,0)');
   g.fillStyle = grd; g.fillRect(0, 0, 256, 256);
   g.lineWidth = 14; g.strokeStyle = 'rgba(255,250,240,0.95)'; g.beginPath(); g.arc(128, 128, 78, 0, Math.PI * 2); g.stroke();
-  g.fillStyle = '#d6aa54'; g.beginPath(); g.arc(128, 128, 30, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#e8583a'; g.beginPath(); g.arc(128, 128, 30, 0, Math.PI * 2); g.fill();
   return canvasTex(c);
 }
 const MARKER_TEX = markerTexture();
@@ -141,10 +153,10 @@ function labelSprite(title, sub) {
   g.font = `500 64px ${FONT}`; const w1 = g.measureText(title).width;
   g.font = `400 40px ${FONT}`; const w2 = g.measureText(sub || '').width;
   const w = Math.min(1000, Math.max(w1, w2) + 70);
-  g.fillStyle = 'rgba(12,12,16,0.82)'; roundRect(g, (1024 - w) / 2, 10, w, sub ? 190 : 110, 26); g.fill();
+  g.fillStyle = 'rgba(10,11,20,0.82)'; roundRect(g, (1024 - w) / 2, 10, w, sub ? 190 : 110, 26); g.fill();
   g.fillStyle = '#ece6da'; g.textAlign = 'center'; g.font = `500 64px ${FONT}`; g.fillText(title, 512, 88);
-  if (sub) { g.fillStyle = '#d6aa54'; g.font = `400 40px ${FONT}`; g.fillText(sub, 512, 160); }
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(c), depthTest: false, transparent: true }));
+  if (sub) { g.fillStyle = '#f07455'; g.font = `400 40px ${FONT}`; g.fillText(sub, 512, 160); }
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(c), depthTest: false, transparent: true, toneMapped: false }));
   s.scale.set(6.4, 6.4 * 220 / 1024, 1); s.renderOrder = 12; s.visible = false;
   return s;
 }
@@ -154,7 +166,7 @@ function buildMarkers(p) {
   for (const h of p.hotspots) {
     const o = objById[h.object]; if (!o) continue;
     const dir = dirFromUV(h.u, h.v);
-    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: MARKER_TEX, depthTest: false, transparent: true }));
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: MARKER_TEX, depthTest: false, transparent: true, toneMapped: false }));
     s.position.copy(dir).multiplyScalar(MARKER_R); s.scale.setScalar(1.1); s.renderOrder = 11;
     s.userData = { obj: o.id, base: 1.1 };
     const lab = labelSprite(L(o, 'title'), L(o, 'sub'));
@@ -181,7 +193,7 @@ function faceHeading(deg) {                  // turn the view to a world azimuth
   if (renderer.xr.isPresenting) {
     const d = new THREE.Vector3(); renderer.xr.getCamera().getWorldDirection(d);
     const have = Math.atan2(-d.x, -d.z); rig.rotation.y += want - have;
-  } else { lookYaw = THREE.MathUtils.degToRad(deg); lookPitch = 0; applyLook(); }
+  } else if (!HERO.active) { lookYaw = THREE.MathUtils.degToRad(deg); lookPitch = 0; applyLook(); }
 }
 async function goPano(id, { fade = true } = {}) {
   const p = panoById[id]; if (!p) return;
@@ -205,7 +217,7 @@ async function goPano(id, { fade = true } = {}) {
 }
 
 // ------------------------------------------------------------------ plans (2D overlay + VR floor)
-const planImg = new Image(); planImg.src = 'img/plan_v2.png';
+const planImg = new Image(); planImg.src = 'img/plan_v3.png';
 await planImg.decode().catch(() => {});
 const planCv = document.createElement('canvas'); planCv.width = planImg.naturalWidth || 2304; planCv.height = planImg.naturalHeight || 1272;
 const planTex = canvasTex(planCv);
@@ -216,8 +228,8 @@ function drawPlanOn(ctx, W, H, opts = {}) {
   const k = W / planImg.naturalWidth * (2304 / 2304);
   if (opts.vr) {                                                  // VR floor: dark rounded plate + title
     ctx.fillStyle = 'rgba(10,10,13,0.80)'; roundRect(ctx, 0, 0, W, H, 60 * k); ctx.fill();
-    ctx.strokeStyle = 'rgba(214,170,84,0.45)'; ctx.lineWidth = 4 * k; roundRect(ctx, 3 * k, 3 * k, W - 6 * k, H - 6 * k, 58 * k); ctx.stroke();
-    ctx.textAlign = 'left'; ctx.fillStyle = '#d6aa54'; ctx.font = `500 ${40 * k}px ${FONT}`;
+    ctx.strokeStyle = 'rgba(232,88,58,0.45)'; ctx.lineWidth = 4 * k; roundRect(ctx, 3 * k, 3 * k, W - 6 * k, H - 6 * k, 58 * k); ctx.stroke();
+    ctx.textAlign = 'left'; ctx.fillStyle = '#e8583a'; ctx.font = `500 ${40 * k}px ${FONT}`;
     ctx.fillText(T('mapTitle').toUpperCase(), 60 * k, 70 * k);
     ctx.fillStyle = '#a39c8f'; ctx.font = `300 ${32 * k}px ${FONT}`; ctx.fillText(T('mapSub'), 60 * k, 112 * k);
   }
@@ -226,16 +238,16 @@ function drawPlanOn(ctx, W, H, opts = {}) {
     const [x, y] = w2p(p.eye_m[0], p.eye_m[1], W, H); const cur = currentPano && p.id === currentPano.id;
     if (cur && opts.yaw !== undefined) {                         // view cone, soft
       const g = ctx.createRadialGradient(x, y, 0, x, y, 230 * k);
-      g.addColorStop(0, 'rgba(214,170,84,0.55)'); g.addColorStop(1, 'rgba(214,170,84,0)');
+      g.addColorStop(0, 'rgba(232,88,58,0.55)'); g.addColorStop(1, 'rgba(232,88,58,0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x, y); ctx.arc(x, y, 230 * k, -opts.yaw - 0.5, -opts.yaw + 0.5); ctx.closePath(); ctx.fill();
     }
     if (cur) {
-      ctx.fillStyle = 'rgba(184,64,44,0.25)'; ctx.beginPath(); ctx.arc(x, y, 46 * k, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#b8402c'; ctx.beginPath(); ctx.arc(x, y, 22 * k, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = 'rgba(232,88,58,0.28)'; ctx.beginPath(); ctx.arc(x, y, 46 * k, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#e8583a'; ctx.beginPath(); ctx.arc(x, y, 22 * k, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#fff6ec'; ctx.lineWidth = 5 * k; ctx.stroke();
     } else {
-      ctx.strokeStyle = miniHover === p.id ? '#ffffff' : '#d6aa54'; ctx.lineWidth = 7 * k;
+      ctx.strokeStyle = miniHover === p.id ? '#ffffff' : '#f1e9d9'; ctx.lineWidth = 7 * k;
       ctx.beginPath(); ctx.arc(x, y, 24 * k, 0, Math.PI * 2); ctx.stroke();
-      ctx.fillStyle = '#d6aa54'; ctx.beginPath(); ctx.arc(x, y, 9 * k, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#e8583a'; ctx.beginPath(); ctx.arc(x, y, 9 * k, 0, Math.PI * 2); ctx.fill();
     }
     if (opts.labels || miniHover === p.id) {
       const fs = (opts.labels ? 44 : 64) * k;
@@ -276,7 +288,7 @@ function nearestPano(X, Y, maxD = 6) {
 }
 // VR floor plan: world (X east, Y north) -> three (x, z) = (-(X-ex), (Y-ey)) * scale, under the user
 const floorPlan = new THREE.Mesh(new THREE.BufferGeometry(),
-  new THREE.MeshBasicMaterial({ map: planTex, transparent: true, opacity: 0.92, depthTest: false, side: THREE.DoubleSide }));
+  new THREE.MeshBasicMaterial({ map: planTex, transparent: true, opacity: 0.92, depthTest: false, side: THREE.DoubleSide, toneMapped: false }));
 floorPlan.renderOrder = 5; floorPlan.visible = false; scene.add(floorPlan);
 function layoutFloorPlan() {
   const [ex, ey] = currentPano.eye_m; const s = PLAN_SCALE;
@@ -426,7 +438,7 @@ const PW = 1024, PH = 1400;
 const panelCv = document.createElement('canvas'); panelCv.width = PW; panelCv.height = PH;
 const panelTex = canvasTex(panelCv);
 const vrPanel = new THREE.Mesh(new THREE.PlaneGeometry(0.78, 0.78 * PH / PW),
-  new THREE.MeshBasicMaterial({ map: panelTex, transparent: true, depthTest: true }));
+  new THREE.MeshBasicMaterial({ map: panelTex, transparent: true, depthTest: true, toneMapped: false }));
 vrPanel.visible = false; scene.add(vrPanel);
 let panelButtons = [];
 const imgCache = new Map();
@@ -437,23 +449,23 @@ function getImg(src) {
 function drawVRPanel(hover = -1) {
   if (!current) return; const o = current.o; const g = panelCv.getContext('2d');
   g.clearRect(0, 0, PW, PH); g.fillStyle = 'rgba(14,14,18,0.9)'; roundRect(g, 0, 0, PW, PH, 36); g.fill();
-  g.strokeStyle = 'rgba(214,170,84,0.45)'; g.lineWidth = 3; roundRect(g, 2, 2, PW - 4, PH - 4, 34); g.stroke();
+  g.strokeStyle = 'rgba(232,88,58,0.45)'; g.lineWidth = 3; roundRect(g, 2, 2, PW - 4, PH - 4, 34); g.stroke();
   let y = 92; g.textAlign = 'left';
-  g.fillStyle = '#d6aa54'; g.font = `500 30px ${FONT}`; g.fillText(L(o, 'sub').toUpperCase(), 60, y); y += 70;
+  g.fillStyle = '#e8583a'; g.font = `500 30px ${FONT}`; g.fillText(L(o, 'sub').toUpperCase(), 60, y); y += 70;
   g.fillStyle = '#ece6da'; g.font = `300 62px ${FONT}`; y = wrapText(g, L(o, 'title'), 60, y, PW - 120, 70) + 10;
   if (o.image) { const im = getImg(o.image); if (im.complete && im.naturalWidth) { const h = (PW - 120) * im.naturalHeight / im.naturalWidth; g.drawImage(im, 60, y, PW - 120, h); y += h + 30; } }
   g.fillStyle = '#ddd6c8'; g.font = `400 32px ${FONT}`; y = wrapText(g, L(o, 'text'), 60, y + 10, PW - 120, 44) + 16;
   g.font = `400 26px ${FONT}`;
   for (const [k, v] of [[T('size').toUpperCase(), sizeText(o)], [T('evidence').toUpperCase(), L(o, 'ev')], [T('source').toUpperCase(), o.src]]) {
-    g.fillStyle = '#d6aa54'; g.fillText(k, 60, y); g.fillStyle = '#a39c8f'; y = wrapText(g, v, 230, y, PW - 290, 36) + 8;
+    g.fillStyle = '#e8583a'; g.fillText(k, 60, y); g.fillStyle = '#a39c8f'; y = wrapText(g, v, 230, y, PW - 290, 36) + 8;
   }
   const labels = [T('vrBack'), T('vrReset')];
   const ws = [420, 260]; let x = 60; const by = PH - 170; panelButtons = [];
   labels.forEach((t, i) => {
-    g.fillStyle = i === 0 ? (hover === 0 ? '#e9c272' : '#d6aa54') : (hover === i ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.08)');
+    g.fillStyle = i === 0 ? (hover === 0 ? '#f26b4c' : '#e8583a') : (hover === i ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.08)');
     roundRect(g, x, by, ws[i], 90, 45); g.fill();
     g.strokeStyle = 'rgba(236,230,218,0.35)'; g.lineWidth = 2; if (i) g.stroke();
-    g.fillStyle = i === 0 ? '#16120a' : '#ece6da'; g.font = `600 32px ${FONT}`; g.textAlign = 'center'; g.fillText(t, x + ws[i] / 2, by + 56); g.textAlign = 'left';
+    g.fillStyle = i === 0 ? '#fff6ec' : '#ece6da'; g.font = `600 32px ${FONT}`; g.textAlign = 'center'; g.fillText(t, x + ws[i] / 2, by + 56); g.textAlign = 'left';
     panelButtons.push({ x0: x / PW, x1: (x + ws[i]) / PW, y0: 1 - (by + 90) / PH, y1: 1 - by / PH, act: [closeObject, resetStudio][i] });
     x += ws[i] + 22;
   });
@@ -495,7 +507,7 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
   if (pointers.size === 2) { const [a, b] = [...pointers.values()]; ptr.pinch = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); }
 });
 renderer.domElement.addEventListener('pointermove', (e) => {
-  if (current) return;
+  if (current || HERO.active) return;
   if (pointers.has(e.pointerId)) pointers.set(e.pointerId, e);
   if (pointers.size === 2) {
     const [a, b] = [...pointers.values()]; const d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -508,10 +520,11 @@ renderer.domElement.addEventListener('pointermove', (e) => {
 });
 renderer.domElement.addEventListener('pointerup', (e) => {
   pointers.delete(e.pointerId); ptr.down = pointers.size > 0;
+  if (HERO.active) { enterTemple(); return; }
   if (!current && ptr.moved < 6) clickPick(e);
 });
 renderer.domElement.addEventListener('wheel', (e) => {
-  if (current) return; camera.fov = THREE.MathUtils.clamp(camera.fov + e.deltaY * 0.03, 30, 95); camera.updateProjectionMatrix();
+  if (current || HERO.active) return; camera.fov = THREE.MathUtils.clamp(camera.fov + e.deltaY * 0.03, 30, 95); camera.updateProjectionMatrix();
 }, { passive: true });
 const ray = new THREE.Raycaster(); ray.camera = camera;
 function pickMarker(e) {
@@ -626,9 +639,9 @@ const xrBtn = $('btn-vr');
 const SESSION_INIT = { optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking', 'layers'] };
 if (navigator.xr) {
   navigator.xr.isSessionSupported('immersive-vr').then((ok) => {
-    xrBtn.disabled = !ok; xrState = ok ? 'ok' : 'no'; applyLang();
+    xrBtn.disabled = !ok; xrState = ok ? 'ok' : 'no'; xrBtn.classList.toggle('hidden', !ok); applyLang();
   }).catch(() => { xrState = 'no'; applyLang(); });
-} else { xrState = 'https'; applyLang(); }
+} else { xrState = 'https'; xrBtn.classList.add('hidden'); applyLang(); }
 xrBtn.onclick = async () => {
   const s = await navigator.xr.requestSession('immersive-vr', SESSION_INIT);
   await start(); renderer.xr.setSession(s);
@@ -655,6 +668,7 @@ renderer.setAnimationLoop(() => {
   (xr ? renderer.xr.getCamera() : camera).getWorldPosition(camPos);
   panoGroup.position.copy(camPos);                       // the panorama always surrounds the eye
   if (xr) xrFrame(dt);
+  if (HERO.active && !xr) heroTick(dt);
   if (current) {
     if (spinIdle) pivot.rotateY(dt * 0.18);
     if (orbit && orbit.enabled) orbit.update();
@@ -664,16 +678,208 @@ renderer.setAnimationLoop(() => {
   renderer.render(scene, camera);
 });
 
-// ------------------------------------------------------------------ start
-let started = false;
-async function start() {
-  if (started) return; started = true;
-  $('intro').classList.add('hidden'); $('hud').classList.remove('hidden');
-  applyLook();
+// ------------------------------------------------------------------ start page: the book cover, alive
+// One shader over the first panorama draws the cover: night sky + red moon, the temple as a red line drawing that
+// turns into a point cloud and then into the rendered stone; on "enter" the scan completes, day comes, and the
+// camera tilts down into the 360 viewpoint. Aux texture (same equirect as the render): R = edges, G = sky, B = temple.
+const HERO = { draw: -20, active: true, shift: -1.25, day: 0, moonA: 0, moonEl: 49, yaw: 0, pitch: 34, fov: 80, t0: performance.now() };
+const introU = {
+  uPano: { value: null }, uAux: { value: null }, uShift: { value: -1.25 }, uDay: { value: 0 }, uTime: { value: 0 },
+  uMoonDir: { value: new THREE.Vector3(-1, 0, 0) }, uMoonR: { value: THREE.MathUtils.degToRad(15.5) }, uMoonA: { value: 0 },
+  uSpan: { value: 88 }, uPts: { value: 1500 }, uDraw: { value: -20 },
+};
+const introMat = new THREE.ShaderMaterial({
+  uniforms: introU, transparent: true, depthTest: false, depthWrite: false, toneMapped: false,
+  vertexShader: /* glsl */`varying vec3 vDir;
+    void main() { vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: /* glsl */`
+    precision highp float;
+    uniform sampler2D uPano, uAux; uniform float uShift, uDay, uTime, uMoonR, uMoonA, uSpan, uPts, uDraw; uniform vec3 uMoonDir;
+    varying vec3 vDir;
+    #define PI 3.14159265359
+    float hash(vec2 p) { vec3 q = fract(vec3(p.xyx) * .1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
+    float ss(float a, float b, float x) { return smoothstep(a, b, x); }
+    float cloud(vec2 pg, float sth, float dens, float g1, out float hv) {        // one layer of scan points
+      vec2 c = floor(pg); float h = hash(c); hv = hash(c + 17.0);
+      vec2 o = vec2(hash(c + 7.1), hash(c + 3.7)) * 0.64 + 0.18;
+      vec2 l = fract(pg) - o; l.x *= sth;
+      float r = mix(0.13, 0.27, g1), d = length(l), aa = max(fwidth(pg.y), 1e-4) * 0.75;
+      return (1.0 - smoothstep(r - aa, r + aa, d)) * step(h, dens);
+    }
+    void main() {
+      vec3 d = normalize(vDir);
+      float u = fract(atan(d.z, d.x) / (2.0 * PI)), th = acos(clamp(d.y, -1.0, 1.0)), sth = max(sin(th), 0.05);
+      vec2 uv = vec2(u, 1.0 - th / PI);
+      vec4 ax = texture2D(uAux, uv); vec3 day = texture2D(uPano, uv).rgb;
+      float el = 90.0 - degrees(th);
+      const vec3 NAVY = vec3(0.040, 0.045, 0.080), VERM = vec3(0.925, 0.345, 0.215), LINE = vec3(0.965, 0.420, 0.270);
+      // sky, stars, moon
+      vec3 sky0 = mix(NAVY * 0.75, vec3(0.105, 0.085, 0.130), pow(clamp((80.0 - el) / 66.0, 0.0, 1.0), 1.4));
+      vec2 sc = vec2(u * 5600.0, th / PI * 2800.0); vec2 ci = floor(sc); float hs = hash(ci + 91.0);
+      float star = step(0.9986, hs) * (0.22 + 0.55 * hash(ci + 1.7)) * (0.7 + 0.3 * sin(uTime * (0.8 + 2.0 * hash(ci + 5.3)) + hs * 60.0))
+                 * (1.0 - smoothstep(0.18, 0.5, length((fract(sc) - 0.5) * vec2(sth, 1.0) * 1.6))) * ss(6.0, 26.0, el);
+      sky0 += star;
+      float ang = acos(clamp(dot(d, uMoonDir), -1.0, 1.0)), aam = fwidth(ang) * 1.2 + 1e-4;
+      float disc = smoothstep(uMoonR + aam, uMoonR - aam, ang) * uMoonA;
+      vec3 skyC = sky0 + exp(-max(ang - uMoonR, 0.0) / 0.20) * 0.17 * uMoonA * VERM;
+      vec3 moonC = VERM * (1.02 - 0.07 * pow(ang / uMoonR, 3.0)) + (hash(floor(uv * vec2(3000.0, 1500.0))) - 0.5) * 0.012;
+      skyC = mix(skyC, moonC, disc);
+      // stone, graded to night
+      float Lu = dot(day, vec3(0.2126, 0.7152, 0.0722)), Lg = pow(clamp((Lu - 0.10) / 0.90, 0.0, 1.0), 1.55);
+      vec3 stone = vec3(Lg * 1.05, Lg * 0.93, Lg * 0.80) * 0.9 + day * 0.1 * Lg;
+      // the sweep: drawing -> points -> stone, from left to right like on the cover
+      float r = (u - 0.5) * 360.0 / uSpan + 0.5 + uShift;
+      float dens = pow(ss(0.10, 0.74, r), 1.7), g1 = ss(0.50, 0.70, r), g2 = ss(0.66, 0.86, r), ar = pow(ss(0.72, 1.0, r), 1.3);
+      float wl = (1.0 - ss(0.16, 0.52, r)) * 0.92;
+      float h1, h2;
+      float p1 = cloud(vec2(u * uPts, th / PI * uPts * 0.5), sth, dens, g1, h1);
+      float p2 = cloud(vec2(u * uPts * 1.41 + 0.37, th / PI * uPts * 0.705 + 0.61), sth, dens * 0.8, g1, h2);
+      float pc = max(p1, p2);
+      vec3 pcol = clamp(stone * (0.78 + 0.5 * mix(h1, h2, step(p1, p2))) + 0.045, 0.0, 1.0);
+      vec3 tem = sky0;
+      float drawn = 1.0 - ss(uDraw - 10.0, uDraw, el);
+      tem = mix(tem, LINE * (1.0 + 0.6 * ss(uDraw - 10.0, uDraw, el)), clamp(ax.r * 1.25, 0.0, 1.0) * wl * drawn);
+      tem = mix(tem, mix(pcol, stone, g2), clamp(pc + g2, 0.0, 1.0) * (1.0 - ar));
+      tem = mix(tem, stone, ar);
+      // ground: the night stone, dimmed, fading to navy below
+      vec3 gro = mix(stone * 0.62, NAVY * 0.45, ss(-2.0, -38.0, el));
+      vec3 col = mix(gro, tem, ax.b);
+      col = mix(col, skyC, ax.g);
+      col += (hash(gl_FragCoord.xy + fract(uTime * 7.31) * 113.0) - 0.5) * 0.028;   // film grain
+      gl_FragColor = vec4(col, 1.0 - uDay);
+    }`,
+});
+const introGeo = new THREE.SphereGeometry(90, 128, 64); introGeo.scale(-1, 1, 1);
+const introMesh = new THREE.Mesh(introGeo, introMat); introMesh.renderOrder = -5; introMesh.frustumCulled = false; panoGroup.add(introMesh);
+const ease = { io3: (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, o3: (t) => 1 - Math.pow(1 - t, 3),
+  ios: (t) => -(Math.cos(Math.PI * t) - 1) / 2, o5: (t) => 1 - Math.pow(1 - t, 5) };
+function tween(ms, fn, ez = ease.io3, delay = 0) {
+  return new Promise((res) => { const t0 = performance.now() + delay;
+    const step = (now) => { const k = Math.min(1, Math.max(0, (now - t0) / ms)); fn(ez(k), k); if (k < 1) requestAnimationFrame(step); else res(); };
+    requestAnimationFrame(step); });
 }
-$('btn-2d').onclick = () => start();
-await goPano('Court_W', { fade: false });
-readyShown = true; $('load-status').textContent = HI_RES ? T('ready8') : T('ready4');
+const lerp = THREE.MathUtils.lerp, D2R = THREE.MathUtils.degToRad;
+function heroTarget() {                                    // the cover's view: looking east, steeply up
+  const a = innerWidth / innerHeight;
+  if (a < 1) return { pitch: 42, fov: Math.min(108, 2 * THREE.MathUtils.radToDeg(Math.atan(Math.tan(D2R(44)) / a))) };
+  const q = location.search, hp = q.match(/hp=([\d.]+)/), hf = q.match(/hf=([\d.]+)/);   // (test overrides)
+  return { pitch: hp ? +hp[1] : 50, fov: hf ? +hf[1] : (a > 1.9 ? 72 : 78) };
+}
+function elevDir(elDeg) { const e = D2R(elDeg); return new THREE.Vector3(-Math.cos(e), Math.sin(e), 0); }
+const projCam = new THREE.PerspectiveCamera();
+function screenY(elDeg, tg) {
+  projCam.fov = tg.fov; projCam.aspect = innerWidth / innerHeight; projCam.near = 0.1; projCam.far = 200;
+  projCam.rotation.order = 'YXZ'; projCam.rotation.set(D2R(tg.pitch), Math.PI / 2, 0); projCam.updateMatrixWorld(); projCam.updateProjectionMatrix();
+  const p = elevDir(elDeg).multiplyScalar(50).project(projCam); return (1 - p.y) / 2 * innerHeight;
+}
+const MOON_EL = 57, APEX_EL = 58.9;                                        // centre a little under the ridge, as on the cover: the roof hides its lower half
+function layoutHero() {
+  const W = innerWidth, H = innerHeight, portrait = W / H < 1, tg = heroTarget();
+  const pad = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pad')) || Math.max(18, Math.min(56, W * 0.036));
+  const nm = $('h-name'), box = document.querySelector('.h-title');
+  const tw = portrait ? W - 2 * pad : Math.min(W * 0.6, H * 1.08);
+  introU.uMoonR.value = D2R(portrait ? 15.5 : 11.5);
+  box.style.left = ((W - tw) / 2) + 'px'; box.style.right = 'auto'; box.style.width = tw + 'px';
+  nm.style.display = 'inline-block'; nm.style.fontSize = '100px';
+  const w100 = nm.getBoundingClientRect().width; nm.style.fontSize = (100 * tw / Math.max(w100, 1)) + 'px';
+  // as on the cover: the hairline crosses the moon, the two names sit between it and the ridge of the roof
+  const yTop = screenY(MOON_EL + THREE.MathUtils.radToDeg(introU.uMoonR.value), tg), yApex = screenY(APEX_EL, tg);
+  const rule = box.querySelector('.h-rule'), sub = box.querySelector('.h-sub');
+  const want = Math.min(yTop + (yApex - yTop) * 0.5, yApex - sub.offsetHeight - 0.9 * parseFloat(getComputedStyle(rule).marginBottom) - 14) - rule.offsetTop;
+  box.style.top = Math.max(H * (portrait ? 0.16 : 0.13), want) + 'px';
+}
+window.__layoutHero = layoutHero;
+const placeOn = $('h-place-on'), _mv = new THREE.Vector3(), _mt = new THREE.Vector3();
+function moonClip() {                                       // the place name turns cream where it crosses the moon
+  camera.updateMatrixWorld();
+  _mv.copy(introU.uMoonDir.value).multiplyScalar(50).applyEuler(panoGroup.rotation).add(camPos).project(camera);
+  const e = HERO.moonEl + THREE.MathUtils.radToDeg(introU.uMoonR.value);
+  _mt.copy(elevDir(e)).multiplyScalar(50).add(camPos).project(camera);
+  const mx = (_mv.x + 1) / 2 * innerWidth, my = (1 - _mv.y) / 2 * innerHeight, mr = Math.abs(_mt.y - _mv.y) / 2 * innerHeight;
+  const r = placeOn.getBoundingClientRect();
+  placeOn.style.clipPath = HERO.moonA > 0.05 ? `circle(${mr.toFixed(1)}px at ${(mx - r.left).toFixed(1)}px ${(my - r.top).toFixed(1)}px)` : 'circle(0px at -999px -999px)';
+}
+function heroCam() { lookYaw = HERO.yaw; lookPitch = D2R(HERO.pitch); applyLook(); if (camera.fov !== HERO.fov) { camera.fov = HERO.fov; camera.updateProjectionMatrix(); } }
+const par = { x: 0, y: 0, tx: 0, ty: 0 };
+addEventListener('pointermove', (e) => { par.tx = e.clientX / innerWidth - 0.5; par.ty = e.clientY / innerHeight - 0.5; });
+function heroTick(dt) {
+  if (!HERO.active) return;
+  const t = (performance.now() - HERO.t0) / 1000;
+  par.x += (par.tx - par.x) * Math.min(1, dt * 1.6); par.y += (par.ty - par.y) * Math.min(1, dt * 1.6);
+  const drift = HERO.leaving ? 0 : 1;
+  HERO.yaw = HERO.baseYaw + drift * (0.010 * Math.sin(t * 0.11) - par.x * 0.035);
+  if (!HERO.leaving) HERO.pitch = HERO.basePitch + 0.6 * Math.sin(t * 0.13) + par.y * 1.6;
+  introU.uDraw.value = HERO.draw; introU.uShift.value = HERO.shift; introU.uDay.value = HERO.day; introU.uMoonA.value = HERO.moonA; introU.uTime.value = t;
+  introU.uMoonDir.value.copy(elevDir(HERO.moonEl));
+  heroCam(); moonClip();
+}
+let heroReady = false;
+async function loadIntro() {
+  const tl = new THREE.TextureLoader();
+  const aux = (HI_RES && renderer.capabilities.maxTextureSize >= 8192) ? 'img/intro_Court_W_8k.png' : 'img/intro_Court_W_4k.png';
+  const [a, p] = await Promise.all([tl.loadAsync(aux), tl.loadAsync(panoById.Court_W.image_phone)]);
+  for (const t of [a, p]) { t.colorSpace = THREE.NoColorSpace; t.anisotropy = 4; }
+  introU.uAux.value = a; introU.uPano.value = p;
+}
+async function playHeroIn() {
+  const tg = heroTarget(); HERO.basePitch = tg.pitch; HERO.baseYaw = 0;
+  HERO.fov = tg.fov + 9; HERO.pitch = tg.pitch - 9; HERO.t0 = performance.now();
+  layoutHero();
+  $('loader').classList.add('done');
+  requestAnimationFrame(() => $('hero').classList.replace('pre', 'in'));
+  tween(5600, (k) => { HERO.fov = lerp(tg.fov + 9, tg.fov, k); HERO.basePitch = lerp(tg.pitch - 9, tg.pitch, k); }, ease.o3);
+  tween(2600, (k) => { HERO.draw = lerp(-20, 95, k); }, ease.ios);
+  tween(2200, (k) => { HERO.moonA = k; }, ease.ios, 900);
+  tween(5200, (k) => { HERO.moonEl = lerp(MOON_EL - 9, MOON_EL, k); }, ease.o3);
+  await tween(4300, (k) => { HERO.shift = lerp(-1.25, 0, k); }, ease.io3, 1300);
+  heroReady = true;
+}
+let leaving = null;
+function enterTemple() {
+  if (!HERO.active || leaving) return leaving;
+  HERO.leaving = true; const p0 = HERO.pitch, f0 = HERO.fov, y0 = HERO.yaw, s0 = HERO.shift, m0 = HERO.moonEl, a0 = HERO.moonA;
+  $('hero').classList.add('out');
+  leaving = (async () => {
+    tween(2700, (k) => { HERO.shift = lerp(s0, 1.4, k); }, ease.io3);
+    tween(1900, (k) => { HERO.moonA = lerp(a0, 0, k); HERO.moonEl = lerp(m0, m0 - 7, k); }, ease.ios, 700);
+    tween(2100, (k) => { HERO.day = k; }, ease.ios, 2000);
+    setTimeout(() => { $('hud').classList.remove('hidden'); $('hud').classList.add('fadein'); }, 4300);
+    await tween(3300, (k) => { HERO.pitch = lerp(p0, 0, k); HERO.fov = lerp(f0, 75, k); HERO.yaw = lerp(y0, 0, k); }, ease.io3, 1700);
+    finishHero();
+  })();
+  return leaving;
+}
+function finishHero() {
+  HERO.active = false; HERO.day = 1; introMesh.visible = false; markerGroup.visible = true;
+  for (const m of markers) m.material.opacity = 0;
+  tween(900, (k) => { for (const m of markers) m.material.opacity = k; }, ease.ios, 150);
+  document.body.classList.remove('is-hero'); $('hero').classList.add('gone'); $('loader').classList.add('done');
+  $('hud').classList.remove('hidden');
+  camera.fov = 75; camera.updateProjectionMatrix(); lookYaw = 0; lookPitch = 0; applyLook(); drawMini();
+}
+// any scroll, swipe, click or key on the start page enters the temple
+renderer.domElement.addEventListener('wheel', (e) => { if (HERO.active && e.deltaY > 4) enterTemple(); }, { passive: true });
+addEventListener('wheel', (e) => { if (HERO.active && e.deltaY > 4) enterTemple(); }, { passive: true });
+addEventListener('keydown', (e) => { if (HERO.active && ['Enter', ' ', 'ArrowDown', 'PageDown'].includes(e.key)) { e.preventDefault(); enterTemple(); } });
+$('btn-enter').onclick = () => enterTemple(); $('h-scroll').onclick = () => enterTemple();
+addEventListener('resize', () => { if (HERO.active && !HERO.leaving) { const tg = heroTarget(); HERO.basePitch = tg.pitch; HERO.fov = tg.fov; layoutHero(); } });
+
+let started = false;
+async function start() {                                    // used by Enter VR and deep links: skip the start page
+  if (started) return; started = true;
+  if (HERO.active) finishHero();
+}
+markerGroup.visible = false;
+{
+  const lf = $('l-fill'); let n = 0;
+  THREE.DefaultLoadingManager.onProgress = (url, loaded, total) => { n = Math.max(n, loaded / total); lf.style.width = (100 * n) + '%'; };
+  $('load-status').textContent = T('preparing');
+}
+const deep = /start|obj=|pano=/.test(location.hash);
+await Promise.all([goPano('Court_W', { fade: false }), deep ? null : loadIntro()]);
+readyShown = true;
+if (deep) { finishHero(); started = true; }
+else { await document.fonts.ready.catch(() => {}); applyLang(); await new Promise((r) => setTimeout(r, 350)); playHeroIn(); }
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
@@ -692,7 +898,6 @@ window.__AT = { goPano, openObject, closeObject, PANOS, OBJECTS };   // for test
 // deep links for testing / presenting: #pano=Cella  #obj=statue  #start
 {
   const h = location.hash; const pm = h.match(/pano=(\w+)/), om = h.match(/obj=(\w+)/);
-  if (/start|obj=|pano=/.test(h)) await start();
   if (pm) await goPano(pm[1], { fade: false });
   if (om) await openObject(om[1]);
 }

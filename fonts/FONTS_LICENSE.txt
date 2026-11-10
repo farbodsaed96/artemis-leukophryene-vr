@@ -1,0 +1,3 @@
+Jost (variable) - Copyright 2020 The Jost Project Authors (https://github.com/indestructible-type/Jost). SIL Open Font License 1.1.
+IBM Plex Mono - Copyright 2017 IBM Corp. SIL Open Font License 1.1.
+Converted to WOFF2 without changes to the glyphs. License text: https://openfontlicense.org
