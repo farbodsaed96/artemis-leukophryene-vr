@@ -6,18 +6,18 @@
    "eye_m": [
     -15.0,
     14.445,
-    1.65
+    1.82
    ],
-   "image_phone": "panos/AT_360_Court_W_4k.jpg",
+   "image_phone": "panos/AT_360_Court_W_v4_4k.jpg",
    "hotspots": [
     {
      "object": "acroterion_apex",
      "label": "Central acroterion",
      "where": "W",
      "lon": -0.0,
-     "lat": 57.8,
+     "lat": 57.61,
      "u": 0.5,
-     "v": 0.17888,
+     "v": 0.17997,
      "distance_m": 14.2,
      "height_m": 24.2
     },
@@ -26,9 +26,9 @@
      "label": "Corner acroterion",
      "where": "SW",
      "lon": 49.25,
-     "lat": 39.96,
+     "lat": 39.67,
      "u": 0.6368,
-     "v": 0.27801,
+     "v": 0.27961,
      "distance_m": 20.0,
      "height_m": 18.4
     },
@@ -37,9 +37,9 @@
      "label": "Pteron ceiling coffers",
      "where": "pteron",
      "lon": -18.1,
-     "lat": 38.45,
+     "lat": 38.11,
      "u": 0.44973,
-     "v": 0.2864,
+     "v": 0.28826,
      "distance_m": 17.9,
      "height_m": 15.85
     },
@@ -48,9 +48,9 @@
      "label": "Cult image of Artemis Leukophryene",
      "where": "",
      "lon": -0.0,
-     "lat": 7.6,
+     "lat": 7.41,
      "u": 0.5,
-     "v": 0.45776,
+     "v": 0.45886,
      "distance_m": 48.3,
      "height_m": 8.1
     },
@@ -59,9 +59,9 @@
      "label": "Corner column",
      "where": "P28",
      "lon": -43.92,
-     "lat": 10.47,
+     "lat": 10.02,
      "u": 0.378,
-     "v": 0.44181,
+     "v": 0.44432,
      "distance_m": 20.8,
      "height_m": 5.5
     },
@@ -70,9 +70,9 @@
      "label": "West front column",
      "where": "P22",
      "lon": -9.93,
-     "lat": 10.6,
+     "lat": 9.98,
      "u": 0.47243,
-     "v": 0.44111,
+     "v": 0.44455,
      "distance_m": 15.2,
      "height_m": 4.5
     },
@@ -81,9 +81,9 @@
      "label": "Pronaos and opisthodomos column",
      "where": "PR1",
      "lon": 6.54,
-     "lat": 10.7,
+     "lat": 10.29,
      "u": 0.51818,
-     "v": 0.44058,
+     "v": 0.44285,
      "distance_m": 23.0,
      "height_m": 6.0
     },
@@ -92,19 +92,19 @@
      "label": "Peristyle column",
      "where": "P24",
      "lon": -23.64,
-     "lat": 9.87,
+     "lat": 9.3,
      "u": 0.43434,
-     "v": 0.44514,
+     "v": 0.44836,
      "distance_m": 16.4,
      "height_m": 4.5
     }
    ],
    "yaw_deg": 0.0,
    "image_tiles": [
-    "panos/AT_360_Court_W_8k_r0c0.jpg",
-    "panos/AT_360_Court_W_8k_r0c1.jpg",
-    "panos/AT_360_Court_W_8k_r1c0.jpg",
-    "panos/AT_360_Court_W_8k_r1c1.jpg"
+    "panos/AT_360_Court_W_v4_8k_r0c0.jpg",
+    "panos/AT_360_Court_W_v4_8k_r0c1.jpg",
+    "panos/AT_360_Court_W_v4_8k_r1c0.jpg",
+    "panos/AT_360_Court_W_v4_8k_r1c1.jpg"
    ],
    "heading_deg": 0.0,
    "title_it": "Davanti al tempio"
@@ -115,18 +115,18 @@
    "eye_m": [
     3.0,
     3.62,
-    3.65
+    3.82
    ],
-   "image_phone": "panos/AT_360_Pteron_SW_4k.jpg",
+   "image_phone": "panos/AT_360_Pteron_SW_v4_4k.jpg",
    "hotspots": [
     {
      "object": "corner",
      "label": "Corner column",
      "where": "P01",
      "lon": 129.65,
-     "lat": 10.25,
+     "lat": 8.23,
      "u": 0.86014,
-     "v": 0.44307,
+     "v": 0.45428,
      "distance_m": 4.7,
      "height_m": 4.5
     },
@@ -135,9 +135,9 @@
      "label": "Pronaos and opisthodomos column",
      "where": "PR1",
      "lon": -59.24,
-     "lat": 10.97,
+     "lat": 9.99,
      "u": 0.33544,
-     "v": 0.43904,
+     "v": 0.44453,
      "distance_m": 9.5,
      "height_m": 5.5
     },
@@ -146,9 +146,9 @@
      "label": "Meander band with rosettes",
      "where": "S",
      "lon": -28.98,
-     "lat": -0.93,
+     "lat": -2.24,
      "u": 0.4195,
-     "v": 0.50514,
+     "v": 0.51242,
      "distance_m": 7.4,
      "height_m": 3.53
     },
@@ -157,21 +157,21 @@
      "label": "West front column",
      "where": "P20",
      "lon": -110.1,
-     "lat": 8.79,
+     "lat": 10.89,
      "u": 0.19418,
-     "v": 0.45117,
+     "v": 0.43949,
      "distance_m": 8.7,
-     "height_m": 5.0
+     "height_m": 5.5
     },
     {
      "object": "frieze_figure",
      "label": "Cella wall frieze",
      "where": "S",
-     "lon": -10.2,
-     "lat": 28.47,
-     "u": 0.47166,
-     "v": 0.34183,
-     "distance_m": 20.3,
+     "lon": -10.46,
+     "lat": 28.69,
+     "u": 0.47094,
+     "v": 0.34063,
+     "distance_m": 19.8,
      "height_m": 14.67
     },
     {
@@ -179,30 +179,30 @@
      "label": "Pteron ceiling coffers",
      "where": "pteron",
      "lon": -82.79,
-     "lat": 34.85,
+     "lat": 34.48,
      "u": 0.27004,
-     "v": 0.30637,
+     "v": 0.30846,
      "distance_m": 17.5,
      "height_m": 15.85
     },
     {
      "object": "peristyle",
      "label": "Peristyle column",
-     "where": "P18",
-     "lon": -125.15,
-     "lat": 9.27,
-     "u": 0.15235,
-     "v": 0.44853,
-     "distance_m": 5.2,
+     "where": "P02",
+     "lon": 75.44,
+     "lat": 10.3,
+     "u": 0.70957,
+     "v": 0.44275,
+     "distance_m": 3.7,
      "height_m": 4.5
     }
    ],
    "yaw_deg": 0.0,
    "image_tiles": [
-    "panos/AT_360_Pteron_SW_8k_r0c0.jpg",
-    "panos/AT_360_Pteron_SW_8k_r0c1.jpg",
-    "panos/AT_360_Pteron_SW_8k_r1c0.jpg",
-    "panos/AT_360_Pteron_SW_8k_r1c1.jpg"
+    "panos/AT_360_Pteron_SW_v4_8k_r0c0.jpg",
+    "panos/AT_360_Pteron_SW_v4_8k_r0c1.jpg",
+    "panos/AT_360_Pteron_SW_v4_8k_r1c0.jpg",
+    "panos/AT_360_Pteron_SW_v4_8k_r1c1.jpg"
    ],
    "heading_deg": 0.0,
    "title_it": "Sotto il colonnato"
@@ -213,29 +213,29 @@
    "eye_m": [
     26.0,
     14.445,
-    4.45
+    4.62
    ],
-   "image_phone": "panos/AT_360_Cella_4k.jpg",
+   "image_phone": "panos/AT_360_Cella_v4_4k.jpg",
    "hotspots": [
     {
      "object": "statue",
      "label": "Cult image of Artemis Leukophryene",
      "where": "",
      "lon": -0.0,
-     "lat": 9.69,
+     "lat": 10.68,
      "u": 0.5,
-     "v": 0.44616,
+     "v": 0.44069,
      "distance_m": 7.3,
-     "height_m": 5.7
+     "height_m": 6.0
     },
     {
      "object": "pronaos",
      "label": "Pronaos and opisthodomos column",
      "where": "PR4",
      "lon": -165.62,
-     "lat": 10.97,
+     "lat": 10.08,
      "u": 0.03994,
-     "v": 0.43903,
+     "v": 0.44398,
      "distance_m": 10.6,
      "height_m": 6.5
     },
@@ -244,19 +244,19 @@
      "label": "Cella column",
      "where": "C2",
      "lon": -53.82,
-     "lat": 6.14,
+     "lat": 11.81,
      "u": 0.35051,
-     "v": 0.46588,
+     "v": 0.43439,
      "distance_m": 3.3,
-     "height_m": 4.8
+     "height_m": 5.3
     }
    ],
    "yaw_deg": 0.0,
    "image_tiles": [
-    "panos/AT_360_Cella_8k_r0c0.jpg",
-    "panos/AT_360_Cella_8k_r0c1.jpg",
-    "panos/AT_360_Cella_8k_r1c0.jpg",
-    "panos/AT_360_Cella_8k_r1c1.jpg"
+    "panos/AT_360_Cella_v4_8k_r0c0.jpg",
+    "panos/AT_360_Cella_v4_8k_r0c1.jpg",
+    "panos/AT_360_Cella_v4_8k_r1c0.jpg",
+    "panos/AT_360_Cella_v4_8k_r1c1.jpg"
    ],
    "heading_deg": 0.0,
    "title_it": "Dentro la cella"
@@ -267,18 +267,18 @@
    "eye_m": [
     67.0,
     14.445,
-    1.65
+    1.82
    ],
-   "image_phone": "panos/AT_360_East_back_4k.jpg",
+   "image_phone": "panos/AT_360_East_back_v4_4k.jpg",
    "hotspots": [
     {
      "object": "acroterion_corner",
      "label": "Corner acroterion",
      "where": "SE",
      "lon": -56.85,
-     "lat": 42.8,
+     "lat": 42.51,
      "u": 0.34207,
-     "v": 0.26222,
+     "v": 0.26384,
      "distance_m": 18.1,
      "height_m": 18.4
     },
@@ -287,9 +287,9 @@
      "label": "Opisthodomos barrier frieze",
      "where": "S",
      "lon": -16.15,
-     "lat": 11.07,
+     "lat": 10.6,
      "u": 0.45514,
-     "v": 0.43851,
+     "v": 0.44113,
      "distance_m": 19.9,
      "height_m": 5.55
     },
@@ -298,9 +298,9 @@
      "label": "Corner column",
      "where": "P42",
      "lon": 50.66,
-     "lat": 10.17,
+     "lat": 9.66,
      "u": 0.64072,
-     "v": 0.44351,
+     "v": 0.44632,
      "distance_m": 18.7,
      "height_m": 5.0
     },
@@ -309,20 +309,20 @@
      "label": "Pronaos and opisthodomos column",
      "where": "OP2",
      "lon": 7.58,
-     "lat": 9.56,
+     "lat": 10.48,
      "u": 0.52106,
-     "v": 0.4469,
+     "v": 0.44178,
      "distance_m": 19.9,
-     "height_m": 5.0
+     "height_m": 5.5
     },
     {
      "object": "ceiling_coffers",
      "label": "Pteron ceiling coffers",
      "where": "pteron",
      "lon": 18.1,
-     "lat": 38.45,
+     "lat": 38.11,
      "u": 0.55027,
-     "v": 0.2864,
+     "v": 0.28826,
      "distance_m": 17.9,
      "height_m": 15.85
     },
@@ -331,19 +331,19 @@
      "label": "Peristyle column",
      "where": "P25",
      "lon": 29.01,
-     "lat": 9.85,
+     "lat": 9.15,
      "u": 0.58058,
-     "v": 0.44529,
+     "v": 0.44918,
      "distance_m": 13.5,
      "height_m": 4.0
     }
    ],
    "yaw_deg": 180.0,
    "image_tiles": [
-    "panos/AT_360_East_back_8k_r0c0.jpg",
-    "panos/AT_360_East_back_8k_r0c1.jpg",
-    "panos/AT_360_East_back_8k_r1c0.jpg",
-    "panos/AT_360_East_back_8k_r1c1.jpg"
+    "panos/AT_360_East_back_v4_8k_r0c0.jpg",
+    "panos/AT_360_East_back_v4_8k_r0c1.jpg",
+    "panos/AT_360_East_back_v4_8k_r1c0.jpg",
+    "panos/AT_360_East_back_v4_8k_r1c1.jpg"
    ],
    "heading_deg": 180.0,
    "title_it": "Dietro il tempio"

@@ -787,7 +787,7 @@ function screenY(elDeg, tg) {
   projCam.rotation.order = 'YXZ'; projCam.rotation.set(D2R(tg.pitch), Math.PI / 2, 0); projCam.updateMatrixWorld(); projCam.updateProjectionMatrix();
   const p = elevDir(elDeg).multiplyScalar(50).project(projCam); return (1 - p.y) / 2 * innerHeight;
 }
-const MOON_EL = 57, APEX_EL = 58.9;                                        // centre a little under the ridge, as on the cover: the roof hides its lower half
+const MOON_EL = 57, APEX_EL = 58.7;                                        // centre a little under the ridge, as on the cover: the roof hides its lower half
 function layoutHero() {
   const W = innerWidth, H = innerHeight, portrait = W / H < 1, tg = heroTarget();
   const pad = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pad')) || Math.max(18, Math.min(56, W * 0.036));
@@ -845,7 +845,7 @@ function heroTick(dt) {
 let heroReady = false;
 async function loadIntro() {
   const tl = new THREE.TextureLoader();
-  const aux = (HI_RES && renderer.capabilities.maxTextureSize >= 8192) ? 'img/intro_Court_W_rv_8k.png' : 'img/intro_Court_W_rv_4k.png';
+  const aux = (HI_RES && renderer.capabilities.maxTextureSize >= 8192) ? 'img/intro_Court_W_v4_rv_8k.png' : 'img/intro_Court_W_v4_rv_4k.png';
   const [a, p] = await Promise.all([tl.loadAsync(aux), tl.loadAsync(panoById.Court_W.image_phone)]);
   for (const t of [a, p]) { t.colorSpace = THREE.NoColorSpace; t.anisotropy = 4; }
   introU.uAux.value = a; introU.uPano.value = p;
