@@ -8,7 +8,7 @@
     14.445,
     1.82
    ],
-   "image_phone": "panos/AT_360_Court_W_v4b_4k.jpg",
+   "image_phone": "panos/AT_360_Court_W_v4c_4k.jpg",
    "hotspots": [
     {
      "object": "acroterion_apex",
@@ -101,10 +101,10 @@
    ],
    "yaw_deg": 0.0,
    "image_tiles": [
-    "panos/AT_360_Court_W_v4b_8k_r0c0.jpg",
-    "panos/AT_360_Court_W_v4b_8k_r0c1.jpg",
-    "panos/AT_360_Court_W_v4b_8k_r1c0.jpg",
-    "panos/AT_360_Court_W_v4b_8k_r1c1.jpg"
+    "panos/AT_360_Court_W_v4c_8k_r0c0.jpg",
+    "panos/AT_360_Court_W_v4c_8k_r0c1.jpg",
+    "panos/AT_360_Court_W_v4c_8k_r1c0.jpg",
+    "panos/AT_360_Court_W_v4c_8k_r1c1.jpg"
    ],
    "heading_deg": 0.0,
    "title_it": "Davanti al tempio"
@@ -117,7 +117,7 @@
     3.62,
     3.82
    ],
-   "image_phone": "panos/AT_360_Pteron_SW_v4_4k.jpg",
+   "image_phone": "panos/AT_360_Pteron_SW_v4c_4k.jpg",
    "hotspots": [
     {
      "object": "corner",
@@ -199,10 +199,10 @@
    ],
    "yaw_deg": 0.0,
    "image_tiles": [
-    "panos/AT_360_Pteron_SW_v4_8k_r0c0.jpg",
-    "panos/AT_360_Pteron_SW_v4_8k_r0c1.jpg",
-    "panos/AT_360_Pteron_SW_v4_8k_r1c0.jpg",
-    "panos/AT_360_Pteron_SW_v4_8k_r1c1.jpg"
+    "panos/AT_360_Pteron_SW_v4c_8k_r0c0.jpg",
+    "panos/AT_360_Pteron_SW_v4c_8k_r0c1.jpg",
+    "panos/AT_360_Pteron_SW_v4c_8k_r1c0.jpg",
+    "panos/AT_360_Pteron_SW_v4c_8k_r1c1.jpg"
    ],
    "heading_deg": 0.0,
    "title_it": "Sotto il colonnato"
@@ -215,7 +215,7 @@
     14.445,
     4.62
    ],
-   "image_phone": "panos/AT_360_Cella_v4b_4k.jpg",
+   "image_phone": "panos/AT_360_Cella_v4c_4k.jpg",
    "hotspots": [
     {
      "object": "statue",
@@ -253,10 +253,10 @@
    ],
    "yaw_deg": 0.0,
    "image_tiles": [
-    "panos/AT_360_Cella_v4b_8k_r0c0.jpg",
-    "panos/AT_360_Cella_v4b_8k_r0c1.jpg",
-    "panos/AT_360_Cella_v4b_8k_r1c0.jpg",
-    "panos/AT_360_Cella_v4b_8k_r1c1.jpg"
+    "panos/AT_360_Cella_v4c_8k_r0c0.jpg",
+    "panos/AT_360_Cella_v4c_8k_r0c1.jpg",
+    "panos/AT_360_Cella_v4c_8k_r1c0.jpg",
+    "panos/AT_360_Cella_v4c_8k_r1c1.jpg"
    ],
    "heading_deg": 0.0,
    "title_it": "Dentro la cella"
@@ -269,7 +269,7 @@
     14.445,
     1.82
    ],
-   "image_phone": "panos/AT_360_East_back_v4b_4k.jpg",
+   "image_phone": "panos/AT_360_East_back_v4c_4k.jpg",
    "hotspots": [
     {
      "object": "acroterion_corner",
@@ -340,10 +340,10 @@
    ],
    "yaw_deg": 180.0,
    "image_tiles": [
-    "panos/AT_360_East_back_v4b_8k_r0c0.jpg",
-    "panos/AT_360_East_back_v4b_8k_r0c1.jpg",
-    "panos/AT_360_East_back_v4b_8k_r1c0.jpg",
-    "panos/AT_360_East_back_v4b_8k_r1c1.jpg"
+    "panos/AT_360_East_back_v4c_8k_r0c0.jpg",
+    "panos/AT_360_East_back_v4c_8k_r0c1.jpg",
+    "panos/AT_360_East_back_v4c_8k_r1c0.jpg",
+    "panos/AT_360_East_back_v4c_8k_r1c1.jpg"
    ],
    "heading_deg": 180.0,
    "title_it": "Dietro il tempio"
