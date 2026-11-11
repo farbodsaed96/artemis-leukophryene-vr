@@ -654,23 +654,27 @@ const xrBtn = $('btn-vr');
 const SESSION_INIT = { optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking', 'layers'] };
 if (navigator.xr) {
   navigator.xr.isSessionSupported('immersive-vr').then((ok) => {
-    xrBtn.disabled = !ok; xrState = ok ? 'ok' : 'no'; xrBtn.classList.toggle('hidden', !ok); applyLang();
+    xrBtn.disabled = !ok; xrState = ok ? 'ok' : 'no'; xrBtn.classList.toggle('hidden', !ok); applyLang(); try { showVR2(); } catch (e) { /* start page not set up yet: finishHero() shows it */ }
   }).catch(() => { xrState = 'no'; applyLang(); });
 } else { xrState = 'https'; xrBtn.classList.add('hidden'); applyLang(); }
 xrBtn.onclick = async () => {
   const s = await navigator.xr.requestSession('immersive-vr', SESSION_INIT);
   await start(); renderer.xr.setSession(s);
 };
+$('btn-vr2').onclick = () => xrBtn.onclick();
+function showVR2() { $('btn-vr2').classList.toggle('hidden', !(xrState === 'ok' && !HERO.active && !renderer.xr.isPresenting)); }
 renderer.xr.addEventListener('sessionstart', () => {
   scene.remove(camera); rig.add(camera); camera.position.set(0, 0, 0); camera.rotation.set(0, 0, 0); camera.clearViewOffset(); camera.fov = 75; camera.updateProjectionMatrix();
   $('hud').classList.add('hidden'); $('studio-ui').classList.add('hidden');
   if (orbit) orbit.enabled = false;
   document.body.classList.remove('studio');
   if (current) { placeStudio(); } else { layoutFloorPlan(); floorPlan.visible = true; }
+  $('btn-vr2').classList.add('hidden'); $('btn-home').classList.add('hidden');
 });
 renderer.xr.addEventListener('sessionend', () => {
   rig.remove(camera); scene.add(camera); camera.position.set(0, 0, 0); floorPlan.visible = false; vrPanel.visible = false;
   if (current) closeObject(); else { applyLook(); $('hud').classList.remove('hidden'); }
+  $('btn-home').classList.remove('hidden'); showVR2();
 });
 
 // ------------------------------------------------------------------ main loop
@@ -882,7 +886,7 @@ function finishHero() {
   HERO.active = false; HERO.day = 1; introMesh.visible = false; markerGroup.visible = true;
   for (const m of markers) m.material.opacity = 0;
   tween(900, (k) => { for (const m of markers) m.material.opacity = k; }, ease.ios, 150);
-  document.body.classList.remove('is-hero'); $('hero').classList.add('gone'); $('loader').classList.add('done'); $('btn-home').classList.remove('hidden');
+  document.body.classList.remove('is-hero'); $('hero').classList.add('gone'); $('loader').classList.add('done'); $('btn-home').classList.remove('hidden'); showVR2();
   $('hud').classList.remove('hidden');
   camera.fov = 75; camera.updateProjectionMatrix(); lookYaw = 0; lookPitch = 0; applyLook(); drawMini();
 }
@@ -902,7 +906,7 @@ addEventListener('keydown', (e) => { if ((e.key === 'm' || e.key === 'M') && !HE
 // back to the start page (the cover): plays the opening again
 async function goHome() {
   if (HERO.active) return;
-  $('btn-home').classList.add('hidden');
+  $('btn-home').classList.add('hidden'); $('btn-vr2').classList.add('hidden');
   await fadeTo(1, 380);
   if (current) {                                            // leave the studio without its own fade
     studio.visible = false; panoGroup.visible = true; scene.background = null; scene.environment = null;

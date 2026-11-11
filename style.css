@@ -199,3 +199,12 @@ body.studio #btn-home { right:calc(min(436px,calc(100vw - 110px)) + var(--langw,
   body.studio #lang { right:16px; } body.studio #btn-home { right:calc(16px + var(--langw,92px) + 8px); }
   #mapbox { width:min(46vw,380px); }
 }
+
+/* Enter VR from inside the tour (shown only where immersive VR is available, e.g. Meta Quest browser) */
+#btn-vr2 { position:fixed; top:14px; right:calc(16px + var(--langw,92px) + 8px + var(--langh,34px) + 8px); z-index:30; height:var(--langh,34px);
+  display:inline-flex; align-items:center; gap:7px; padding:0 13px 0 10px; font-size:12px; letter-spacing:.14em; font-weight:500;
+  background:var(--red); border-color:var(--red); color:#fff6ec; }
+#btn-vr2 svg { width:20px; height:20px; fill:none; stroke:#fff6ec; stroke-width:1.5; stroke-linejoin:round; }
+#btn-vr2:hover { background:var(--red2); }
+body.studio #btn-vr2 { right:calc(min(436px,calc(100vw - 110px)) + var(--langw,92px) + 8px + var(--langh,34px) + 8px); }
+@media (max-width:760px), (max-height:500px) { body.studio #btn-vr2 { right:calc(16px + var(--langw,92px) + 8px + var(--langh,34px) + 8px); } }
