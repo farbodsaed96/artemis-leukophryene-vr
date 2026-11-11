@@ -40,29 +40,29 @@
   "models/statue.glb"
  ],
  "panos8k": [
-  "panos/AT_360_Cella_v4_8k_r0c0.jpg",
-  "panos/AT_360_Cella_v4_8k_r0c1.jpg",
-  "panos/AT_360_Cella_v4_8k_r1c0.jpg",
-  "panos/AT_360_Cella_v4_8k_r1c1.jpg",
-  "panos/AT_360_Court_W_v4_8k_r0c0.jpg",
-  "panos/AT_360_Court_W_v4_8k_r0c1.jpg",
-  "panos/AT_360_Court_W_v4_8k_r1c0.jpg",
-  "panos/AT_360_Court_W_v4_8k_r1c1.jpg",
-  "panos/AT_360_East_back_v4_8k_r0c0.jpg",
-  "panos/AT_360_East_back_v4_8k_r0c1.jpg",
-  "panos/AT_360_East_back_v4_8k_r1c0.jpg",
-  "panos/AT_360_East_back_v4_8k_r1c1.jpg",
+  "panos/AT_360_Cella_v4b_8k_r0c0.jpg",
+  "panos/AT_360_Cella_v4b_8k_r0c1.jpg",
+  "panos/AT_360_Cella_v4b_8k_r1c0.jpg",
+  "panos/AT_360_Cella_v4b_8k_r1c1.jpg",
+  "panos/AT_360_Court_W_v4b_8k_r0c0.jpg",
+  "panos/AT_360_Court_W_v4b_8k_r0c1.jpg",
+  "panos/AT_360_Court_W_v4b_8k_r1c0.jpg",
+  "panos/AT_360_Court_W_v4b_8k_r1c1.jpg",
+  "panos/AT_360_East_back_v4b_8k_r0c0.jpg",
+  "panos/AT_360_East_back_v4b_8k_r0c1.jpg",
+  "panos/AT_360_East_back_v4b_8k_r1c0.jpg",
+  "panos/AT_360_East_back_v4b_8k_r1c1.jpg",
   "panos/AT_360_Pteron_SW_v4_8k_r0c0.jpg",
   "panos/AT_360_Pteron_SW_v4_8k_r0c1.jpg",
   "panos/AT_360_Pteron_SW_v4_8k_r1c0.jpg",
   "panos/AT_360_Pteron_SW_v4_8k_r1c1.jpg",
   "img/intro_Court_W_v4_rv_8k.png",
-  "panos/AT_360_Court_W_v4_4k.jpg"
+  "panos/AT_360_Court_W_v4b_4k.jpg"
  ],
  "panos4k": [
-  "panos/AT_360_Cella_v4_4k.jpg",
-  "panos/AT_360_Court_W_v4_4k.jpg",
-  "panos/AT_360_East_back_v4_4k.jpg",
+  "panos/AT_360_Cella_v4b_4k.jpg",
+  "panos/AT_360_Court_W_v4b_4k.jpg",
+  "panos/AT_360_East_back_v4b_4k.jpg",
   "panos/AT_360_Pteron_SW_v4_4k.jpg"
  ]
 }
