@@ -23,7 +23,15 @@
   "vendor/jsm/utils/SkeletonUtils.js",
   "vendor/jsm/webxr/VRButton.js",
   "vendor/three.core.js",
-  "vendor/three.module.js"
+  "vendor/three.module.js",
+  "img/depth_Court_W_v1.png",
+  "img/thumb_Court_W_v1.jpg",
+  "img/depth_Pteron_SW_v1.png",
+  "img/thumb_Pteron_SW_v1.jpg",
+  "img/depth_Cella_v1.png",
+  "img/thumb_Cella_v1.jpg",
+  "img/depth_East_back_v1.png",
+  "img/thumb_East_back_v1.jpg"
  ],
  "models": [
   "models/acroterion_apex.glb",
